@@ -1,6 +1,18 @@
-<div class="card">
-    <h3>{{ survey.title }}</h3>
-    <p>{{ survey.description }}</p>
-    <small *ngIf="survey.endDate">Ends on: {{ survey.endDate }}</small>
+<div class="survey-card">
+    <div class="survey-header">
+        <h3>{{ survey.title }}</h3>
+        <span class="category">{{ survey.category }}</span>
+    </div>
+
+    <p class="description">{{ survey.description }}</p>
+
+    <div class="footer">
+        @if (survey.endDate) {
+            <span class="end-date">{{ survey.endDate }}</span>
+        }
+          
+
+        <button class="button small">Open</button>
+    </div>
 </div>
   

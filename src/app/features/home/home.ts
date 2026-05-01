@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { SurveyService } from '../../shared/services/survey';
+import { SurveyService } from '../../shared/services/survey.service';
 import { SurveyListComponent } from './survey-list/survey-list';
 import { EndingSoonComponent } from './ending-soon/ending-soon';
-
 
 @Component({
   selector: 'app-home',
@@ -11,9 +10,8 @@ import { EndingSoonComponent } from './ending-soon/ending-soon';
   styleUrls: ['./home.scss'],
   imports: [SurveyListComponent, EndingSoonComponent],
 })
-
 export class HomeComponent {
-  surveyService = inject(SurveyService);
+  private surveyService = inject(SurveyService);
 
   endingSoon = this.surveyService.getEndingSoon();
   active = this.surveyService.getActiveSurveys();

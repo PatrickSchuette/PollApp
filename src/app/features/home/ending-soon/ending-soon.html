@@ -1,1 +1,6 @@
-<p>ending-soon works!</p>
+<div class="ending-soon">
+    @for(s of surveys; track s.id) {
+    <app-survey-card [survey]="s"></app-survey-card>
+    }
+</div>
+  
