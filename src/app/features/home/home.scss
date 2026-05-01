@@ -1,0 +1,11 @@
+.tablet {
+    width: 300px;
+    height: 300px;
+    background-image: url('/tablet.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    
+    &:hover {
+        background-image: url('/tablet-hover.svg');
+    }
+}
