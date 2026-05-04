@@ -49,5 +49,26 @@ export class SurveyService {
     getPastSurveys() {
         return this._surveys().filter(s => s.isFinished);
     }
+
+    /**
+ * Creates a new survey and adds it to the signal state.
+ * @param draft Partial survey data from the create form
+ * @returns The newly created survey
+ */
+    createSurvey(draft: any) {
+        const newSurvey = {
+            id: crypto.randomUUID(),
+            title: draft.title,
+            description: draft.description,
+            category: draft.category,
+            endDate: draft.endDate,
+            questions: draft.questions,
+            isFinished: false
+        };
+
+        this._surveys.update(list => [...list, newSurvey]);
+        return newSurvey;
+    }
+
       
 }

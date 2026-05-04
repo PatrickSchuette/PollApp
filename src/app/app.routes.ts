@@ -6,4 +6,11 @@ export const routes: Routes = [
         path: '',
         component: HomeComponent,
     },
+    {
+        path: 'create',
+        loadComponent: () =>
+            import('./features/create-survey/create-survey').then(
+                m => m.CreateSurveyComponent
+            ),
+    },
 ];

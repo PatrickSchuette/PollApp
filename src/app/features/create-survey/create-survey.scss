@@ -1,0 +1,213 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/button' as *;
+
+.create-survey {
+  background: $color-bg-dark;
+  padding: 2rem;
+  border-radius: $radius-default;
+  color: $color-text-light;
+  max-width: 900px;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .badge {
+      background: $color-primary;
+      padding: 0.3rem 0.7rem;
+      border-radius: $radius-default;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: $color-text-light;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: $color-text-light;
+    }
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-gap;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      color: $color-text-light;
+
+      span {
+        opacity: 0.8;
+      }
+
+      input,
+      select,
+      textarea {
+        background: lighten($color-bg-dark, 8%);
+        border: 1px solid lighten($color-bg-dark, 18%);
+        border-radius: $radius-default;
+        padding: 0.9rem 1rem;
+        color: $color-text-light;
+        font-size: 1rem;
+
+        &:focus {
+          outline: 2px solid $color-primary;
+        }
+      }
+
+      textarea {
+        resize: none;
+        height: 120px;
+      }
+    }
+  }
+
+  .questions {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .question-block {
+      background: lighten($color-bg-dark, 8%);
+      padding: 1.5rem;
+      border-radius: $radius-default;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+
+      h2 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: $color-text-light;
+      }
+
+      input[type="text"] {
+        background: lighten($color-bg-dark, 12%);
+        border: 1px solid lighten($color-bg-dark, 22%);
+        border-radius: $radius-default;
+        padding: 0.8rem 1rem;
+        color: $color-text-light;
+
+        &:focus {
+          outline: 2px solid $color-primary;
+        }
+      }
+
+      .allow-multiple {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        opacity: 0.9;
+
+        input {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .answers {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        h3 {
+          margin: 0;
+          font-size: 1.1rem;
+          opacity: 0.9;
+        }
+
+        .answer-row {
+          display: grid;
+          grid-template-columns: 30px 1fr 30px;
+          align-items: center;
+          gap: 0.8rem;
+
+          .label {
+            font-weight: 700;
+            opacity: 0.9;
+          }
+
+          input {
+            background: lighten($color-bg-dark, 12%);
+            border: 1px solid lighten($color-bg-dark, 22%);
+            border-radius: $radius-default;
+            padding: 0.8rem 1rem;
+            color: $color-text-light;
+          }
+
+          .icon-button {
+            background: none;
+            border: none;
+            color: $color-primary;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+
+            &:hover {
+              opacity: 1;
+            }
+          }
+        }
+
+        .link-button {
+          background: none;
+          border: none;
+          color: $color-primary;
+          font-weight: 600;
+          cursor: pointer;
+          padding: 0;
+          width: fit-content;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    .secondary {
+      background: transparent;
+      border: 2px solid $color-primary;
+      color: $color-primary;
+      padding: 0.8rem 1.4rem;
+      border-radius: $radius-default;
+      font-weight: 600;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba($color-primary, 0.1);
+      }
+    }
+
+    .primary {
+      background: $color-primary;
+      color: $color-text-light;
+      padding: 0.8rem 1.4rem;
+      border-radius: $radius-default;
+      font-weight: 700;
+      cursor: pointer;
+
+      &:hover {
+        background: $color-primary-hover;
+      }
+    }
+  }
+}

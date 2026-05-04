@@ -1,0 +1,21 @@
+.ending-soon-slider {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 1rem;
+    scroll-snap-type: x mandatory;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  .track {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .slide {
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+  }
+  

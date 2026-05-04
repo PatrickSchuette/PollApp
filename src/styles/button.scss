@@ -14,4 +14,25 @@
   &:hover {
     background: $color-primary-hover;
   }
+
+
+&-primary {
+  background: $color-primary;
+  color: $color-text-light;
+  padding: 0.8rem 1.4rem;
+  border-radius: $radius-default;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+&-secondary {
+  background: transparent;
+  color: $color-primary;
+  padding: 0.8rem 1.4rem;
+  border-radius: $radius-default;
+  border: 2px solid $color-primary;
+  cursor: pointer;
+  font-weight: 600;
+}
 }

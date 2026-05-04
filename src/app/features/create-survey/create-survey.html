@@ -1,1 +1,83 @@
-<p>create-survey works!</p>
+<div class="create-survey">
+    <header class="header">
+        <span class="badge">Draft</span>
+        <h1>Create new survey</h1>
+    </header>
+
+    <section class="meta">
+        <label>
+            <span>Survey name</span>
+            <input type="text" placeholder="Name your survey" [(ngModel)]="surveyDraft.title" />
+        </label>
+
+        <label>
+            <span>Set end date (optional)</span>
+            <input type="date" [(ngModel)]="surveyDraft.endDate" />
+        </label>
+
+        <label>
+            <span>Choose category</span>
+            <select [(ngModel)]="surveyDraft.category">
+                <option value="" disabled selected>Select category</option>
+        
+                @for (c of categories(); track c.id) {
+                <option [value]="c.id">{{ c.label }}</option>
+                }
+            </select>
+        </label>
+          
+
+        <label>
+            <span>Describing text (optional)</span>
+            <textarea rows="3" placeholder="Describe your survey" [(ngModel)]="surveyDraft.description"></textarea>
+        </label>
+    </section>
+
+    <section class="questions">
+        @for (q of surveyDraft.questions; track i; let i = $index) {
+
+        <div class="question-block">
+            <h2>{{ i + 1 }}. Question</h2>
+
+            <input type="text" placeholder="Question text" [(ngModel)]="q.text" />
+
+            <label class="allow-multiple">
+                <input type="checkbox" [(ngModel)]="q.allowMultiple" />
+                Allow multiple answers
+            </label>
+
+            <div class="answers">
+                <h3>Answers</h3>
+
+                @for (a of q.answers; track j; let j = $index) {
+                <div class="answer-row">
+                    <span class="label">{{ toLetter(j) }}.</span>
+                    <input type="text" placeholder="Answer" [(ngModel)]="surveyDraft.questions[i].answers[j]" />
+                    <button type="button" class="icon-button" (click)="removeAnswer(i, j)">
+                        ✕
+                    </button>
+                </div>
+                }
+
+                <button type="button" class="link-button" (click)="addAnswer(i)">
+                    Add answer +
+                </button>
+            </div>
+        </div>
+        }
+
+        <button type="button" class="link-button" (click)="addQuestion()">
+            Add next question +
+        </button>
+    </section>
+
+    <footer class="actions">
+        <button type="button" class="secondary">
+            Cancel
+        </button>
+        <button type="button" class="primary" (click)="publish()">
+            Publish
+        </button>
+    </footer>
+</div>
+  
