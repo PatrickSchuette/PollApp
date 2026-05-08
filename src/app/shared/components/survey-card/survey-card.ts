@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Survey } from '../../interfaces/survey';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-survey-card',
@@ -12,4 +13,10 @@ import { DatePipe } from '@angular/common';
 export class SurveyCardComponent {
   @Input() survey!: Survey;
   @Input() index!: number;
+
+  constructor(private router: Router) {}
+
+  open():void {
+    this.router.navigate(['/survey', this.survey.id]);
+  }
 }

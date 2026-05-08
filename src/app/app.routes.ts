@@ -13,4 +13,10 @@ export const routes: Routes = [
                 m => m.CreateSurveyComponent
             ),
     },
+    {
+        path: 'survey/:id',
+        loadComponent: () =>
+            import('./features/survey-detail/survey-detail').then(m => m.SurveyDetailComponent)
+    }
+
 ];

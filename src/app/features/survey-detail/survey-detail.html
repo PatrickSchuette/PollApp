@@ -1,1 +1,62 @@
-<p>survey-detail works!</p>
+@if (survey) {
+
+<div class="survey-detail">
+    <div class="left">
+        <div class="meta">
+            <span class="badge">Published</span>
+            <p>Ends on {{ survey.endDate }}</p>
+            <p>Category: {{ survey.category }}</p>
+        </div>
+
+        <h1>{{ survey.title }}</h1>
+        <p class="description">{{ survey.description }}</p>
+
+        @for (q of survey.questions; track q.text; let i = $index) {
+        <div class="question-block">
+            <h2>{{ i + 1 }}. {{ q.text }}</h2>
+
+            @if (q.allowMultiple) {
+            <p class="hint">More than one answers are possible.</p>
+            }
+
+            <div class="answers">
+                @for (a of q.answers; track a; let j = $index) {
+                <label class="answer-option">
+                    <input type="checkbox" disabled />
+                    <span class="label">{{ j | letter }}.</span>
+                    <span>{{ a }}</span>
+                </label>
+                }
+            </div>
+        </div>
+        }
+
+        <button class="primary">Complete survey</button>
+    </div>
+
+    <div class="right">
+        <h2>Survey results LIVE</h2>
+
+        @if (!survey.results || survey.results.length === 0) {
+        <p class="no-results">There are no answers yet.</p>
+        } @else {
+        @for (r of survey.results; track r.questionIndex) {
+        <div class="result-block">
+            <h3>{{ r.question }}</h3>
+
+            @for (o of r.options; track o.label) {
+            <div class="result-row">
+                <span>{{ o.label }} – {{ o.percent }}%</span>
+                <div class="bar">
+                    <div class="fill" [style.width.%]="o.percent"></div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+        }
+    </div>
+</div>
+
+}
+    

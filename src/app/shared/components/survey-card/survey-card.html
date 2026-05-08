@@ -1,4 +1,4 @@
-<div class="survey-card">
+<div class="survey-card"  (click)="open()">
     <div class="survey-header">
         <h3>{{ survey.title }}</h3>
         <span class="category">{{ survey.category }}</span>
@@ -10,9 +10,7 @@
         @if (survey.endDate) {
             <span class="end-date">{{ survey.endDate }}</span>
         }
-          
 
-        <button class="button small">Open</button>
     </div>
 </div>
   

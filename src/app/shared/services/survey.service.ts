@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Survey } from '../interfaces/survey';
+import { LetterPipe } from '../pipes/letter.pipe';
 
 @Injectable({ providedIn: 'root' })
 export class SurveyService {
@@ -31,7 +32,7 @@ export class SurveyService {
             questions: [],
             isFinished: false,
         }
-    ]);      
+    ]);
 
     surveys = this._surveys.asReadonly();
 
@@ -70,5 +71,11 @@ export class SurveyService {
         return newSurvey;
     }
 
-      
+    /**
+     * Returns a survey by ID.
+     */
+    getSurveyById(id: string) {
+        return this._surveys().find(s => s.id === id) ?? null;
+    }
+
 }
