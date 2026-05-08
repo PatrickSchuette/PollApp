@@ -53,11 +53,14 @@ export class CreateSurveyComponent {
     this.surveyDraft.questions[qIndex].answers.splice(aIndex, 1);
   }
 
-  /** Publishes the survey and navigates to detail page */
+  /**
+   * Publishes the survey and navigates back to home.
+   */
   publish(): void {
-    const newSurvey = this.surveyService.createSurvey(this.surveyDraft);
-    this.router.navigate(['/survey', newSurvey.id]);
+    this.surveyService.createSurvey(this.surveyDraft);
+    this.router.navigate(['/']);
   }
+  
 
   /**
  * Converts an index (0,1,2) to a letter (A,B,C).

@@ -39,7 +39,7 @@ export class SurveyService {
         return this._surveys()
             .filter(s => !s.isFinished)
             .sort((a, b) => new Date(a.endDate!).getTime() - new Date(b.endDate!).getTime())
-            .slice(0, 3); // z.B. nur die nächsten 3
+            .slice(0, 3);
     }
 
     getActiveSurveys() {
