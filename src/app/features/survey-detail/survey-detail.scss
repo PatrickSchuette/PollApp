@@ -1,0 +1,286 @@
+@use '../../../styles/variables' as *;
+
+/* ------------------------------------------------ */
+/* PAGE CONTAINER */
+/* ------------------------------------------------ */
+
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #ffffff;
+  color: #000000;
+
+  .survey-detail {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 3rem;
+  }
+}
+
+/* ------------------------------------------------ */
+/* HEADER */
+/* ------------------------------------------------ */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border-bottom: 1px solid #00000010;
+
+  .header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .logo img {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    .create-btn {
+      background: #EE9236;
+      color: #ffffff;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  }
+}
+
+/* ------------------------------------------------ */
+/* LEFT COLUMN */
+/* ------------------------------------------------ */
+
+.left {
+  background: #8E70991A;
+  padding: 2rem;
+  border-radius: 0;
+  border-top-right-radius: 160px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+
+  /* ---------------- META ---------------- */
+
+  .meta {
+    grid-column: 1 / 3;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    padding-right: 0.5rem; /* verhindert Überlappen der Rundung */
+
+    .badge {
+      background: #EE9236;
+      color: #ffffff;
+      padding: 0.3rem 0.7rem;
+      border-radius: 0;
+      border-top-right-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      width: fit-content;
+      grid-column: 1 / 2;
+    }
+
+    .end {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-left: 0.1rem;
+      margin-top: 0.2rem;
+      grid-column: 1 / 2;
+    }
+
+    .category {
+      font-size: 0.95rem;
+      font-weight: 500;
+      opacity: 0.9;
+      white-space: nowrap;
+      grid-column: 2 / 3;
+      align-self: start;
+      margin-top: 0.3rem; /* exakt gleiche Höhe wie das Datum */
+      text-align: right;
+    }
+  }
+
+  /* ---------------- TITLE ---------------- */
+
+  h1 {
+    grid-column: 1 / 3;
+    font-family: 'Nerko One', cursive;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #EE9236;
+    margin: 0;
+  }
+
+  /* ---------------- DESCRIPTION ---------------- */
+
+  .description {
+    grid-column: 1 / 3;
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+
+  /* ---------------- QUESTION BLOCK ---------------- */
+
+  .question-block {
+    background: #ffffff;
+    padding: 1.8rem;
+    border-radius: 20px;
+    border: 1px solid #00000010;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+
+    .hint {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .answers {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      .answer-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.4rem;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        cursor: pointer;
+        white-space: normal;
+        overflow: visible;
+
+        input {
+          margin-top: 0.1rem;
+        }
+
+        .label {
+          font-weight: 600;
+          margin-right: 0.2rem;
+        }
+      }
+    }
+  }
+  /* ---------------- SUBMIT BUTTON ---------------- */
+
+  .primary {
+    grid-column: 1 / 3;      /* unter allen Fragen */
+    justify-self: end;       /* rechtsbündig */
+    background: #EE9236;
+    color: #ffffff;
+    padding: 1rem 1.6rem;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+
+}
+
+/* ------------------------------------------------ */
+/* RIGHT COLUMN */
+/* ------------------------------------------------ */
+
+.right {
+  background: #ffffff;
+  padding: 1.8rem;
+  border-radius: 20px;
+  border: 1px solid #00000010;
+  height: fit-content;
+
+  /* ---------------- TITLE ---------------- */
+
+  h2 {
+    margin: 0 0 1.6rem 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+
+    .live {
+      color: #EE9236; /* LIVE in gelb */
+    }
+  }
+
+  /* ---------------- RESULT BLOCK ---------------- */
+
+  .result-block {
+    margin-bottom: 2.2rem;
+
+    h3 {
+      margin: 0 0 0.8rem 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .result-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto; /* A | Balken | 50% */
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.9rem;
+
+      .label {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .bar {
+        width: 100%;
+        height: 12px;
+        background: #EE923620;
+        border-radius: 0;          /* links keine Rundung */
+        overflow: hidden;
+
+        .fill {
+          height: 100%;
+          background: #EE9236;
+          border-radius: 0 12px 12px 0; /* rechts Rundung */
+          transition: width 0.4s ease;
+        }
+      }
+
+      .percent {
+        font-weight: 600;
+        color: #EE9236;  /* 50% in gelb */
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+/* ------------------------------------------------ */
+/* SUCCESS DIALOG */
+/* ------------------------------------------------ */
+
+.success-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #EE9236;
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  font-weight: 600;
+  z-index: 2000;
+}

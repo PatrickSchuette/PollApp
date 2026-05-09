@@ -6,7 +6,11 @@ export interface Survey {
     description: string;
     category: string;
     endDate: string;
-    questions: Question[];
+    questions: {
+        text: string;
+        allowMultiple: boolean;
+        answers: string[];
+    }[];
     isFinished: boolean;
 
     results?: {

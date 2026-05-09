@@ -1,62 +1,94 @@
-@if (survey) {
-
-<div class="survey-detail">
-    <div class="left">
-        <div class="meta">
-            <span class="badge">Published</span>
-            <p>Ends on {{ survey.endDate }}</p>
-            <p>Category: {{ survey.category }}</p>
+<header class="app-header">
+    <div class="header-content">
+        <div class="logo">
+            <img src="logo.svg" alt="Poll App Logo" />
         </div>
 
-        <h1>{{ survey.title }}</h1>
-        <p class="description">{{ survey.description }}</p>
-
-        @for (q of survey.questions; track q.text; let i = $index) {
-        <div class="question-block">
-            <h2>{{ i + 1 }}. {{ q.text }}</h2>
-
-            @if (q.allowMultiple) {
-            <p class="hint">More than one answers are possible.</p>
-            }
-
-            <div class="answers">
-                @for (a of q.answers; track a; let j = $index) {
-                <label class="answer-option">
-                    <input type="checkbox" disabled />
-                    <span class="label">{{ j | letter }}.</span>
-                    <span>{{ a }}</span>
-                </label>
-                }
-            </div>
-        </div>
-        }
-
-        <button class="primary">Complete survey</button>
+        <button class="create-btn" (click)="goToCreateSurvey()">Create survey</button>
     </div>
+</header>
+  
+  
 
-    <div class="right">
-        <h2>Survey results LIVE</h2>
+<div class="page-container">
+    @if (survey) {
 
-        @if (!survey.results || survey.results.length === 0) {
-        <p class="no-results">There are no answers yet.</p>
-        } @else {
-        @for (r of survey.results; track r.questionIndex) {
-        <div class="result-block">
-            <h3>{{ r.question }}</h3>
+    <div class="survey-detail">
+        <div class="left">
+            <div class="meta">
+                <span class="badge">Published</span>
+                <p>Ends on {{ survey.endDate }}</p>
+                <p>Category: {{ survey.category }}</p>
+            </div>
 
-            @for (o of r.options; track o.label) {
-            <div class="result-row">
-                <span>{{ o.label }} – {{ o.percent }}%</span>
-                <div class="bar">
-                    <div class="fill" [style.width.%]="o.percent"></div>
+            <h1>{{ survey.title }}</h1>
+            <p class="description">{{ survey.description }}</p>
+
+            @for (q of survey.questions; track q.text; let i = $index) {
+            <div class="question-block">
+                <h2>{{ i + 1 }}. {{ q.text }}</h2>
+
+                @if (q.allowMultiple) {
+                <p class="hint">More than one answers are possible.</p>
+                }
+
+                <div class="answers">
+                    @for (a of q.answers; track a; let j = $index) {
+                    <label class="answer-option" [class.selected]="answers()[i]?.includes(j)"
+                        (click)="toggleAnswer(i, j, q.allowMultiple)">
+
+                        @if (q.allowMultiple) {
+                        <input type="checkbox" [checked]="answers()[i]?.includes(j)" />
+                        } @else {
+                        <input type="radio" name="q{{ i }}" [checked]="answers()[i]?.[0] === j" />
+                        }
+
+                        <span class="label">{{ j | letter }}.</span>
+                        <span>{{ a }}</span>
+                    </label>
+
+                    }
                 </div>
             </div>
             }
-        </div>
-        }
-        }
-    </div>
-</div>
 
-}
-    
+            <button class="primary" (click)="completeSurvey()">Complete survey</button>
+        </div>
+
+        <div class="right">
+            <h2>Survey results LIVE</h2>
+
+            @if (!survey.results || survey.results.length === 0) {
+                <div class="no-results">
+                    <p class="headline">Results will be shown here after participants complete the survey.</p>
+                    <p class="sub">There are no answers yet.</p>
+                </div>
+                  
+            } @else {
+            @for (r of survey.results; track r.questionIndex) {
+            <div class="result-block">
+                <h3>{{ r.question }}</h3>
+
+                @for (o of r.options; track o.label) {
+                <div class="result-row">
+                    <span>{{ o.label }}</span>
+                    <div class="bar">
+                        <div class="fill" [style.width.%]="o.percent"></div>
+                    </div>
+                    <span class="percent">{{ o.percent }}%</span>
+                </div>
+                }
+            </div>
+            }
+            }
+        </div>
+    </div>
+
+    @if (showSuccess()) {
+    <div class="success-dialog">
+        <p>Your answers were submitted successfully!</p>
+    </div>
+    }
+
+    }
+</div>
