@@ -32,7 +32,7 @@ export class CreateSurveyComponent {
 
   private categoryService = inject(CategoryService);
   categories = this.categoryService.categories;
-
+  categoryOpen = false;
 
   /** Adds a new empty question */
   addQuestion(): void {
@@ -60,13 +60,26 @@ export class CreateSurveyComponent {
     this.surveyService.createSurvey(this.surveyDraft);
     this.router.navigate(['/']);
   }
-  
 
   /**
- * Converts an index (0,1,2) to a letter (A,B,C).
- */
+   * Converts an index (0,1,2) to a letter (A,B,C).
+   */
   toLetter(i: number): string {
     return String.fromCharCode(65 + i);
   }
+
+  /** Navigates back to the home page. */
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
+
+  /**
+   *  Removes a question from the survey draft.
+   * @param index 
+   */
+  removeQuestion(index: number) {
+    this.surveyDraft.questions.splice(index, 1);
+  }
+
 
 }

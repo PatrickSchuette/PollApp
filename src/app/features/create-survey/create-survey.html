@@ -1,61 +1,98 @@
 <div class="create-survey">
     <header class="header">
         <span class="badge">Draft</span>
-        <h1>Create new survey</h1>
+
+        <div class="header-row">
+            <h1>Create new survey</h1>
+
+            <button class="cancel" (click)="goHome()">
+                Cancel
+            </button>
+        </div>
     </header>
 
     <section class="meta">
-        <label>
-            <span>Survey name</span>
-            <input type="text" placeholder="Name your survey" [(ngModel)]="surveyDraft.title" />
-        </label>
 
-        <label>
-            <span>Set end date (optional)</span>
-            <input type="date" [(ngModel)]="surveyDraft.endDate" />
-        </label>
+        <!-- LEFT: Survey name -->
+        <div class="meta-item name">
+            <label>
+                <span>Survey name</span>
+                <input class="styled-input" type="text" [(ngModel)]="surveyDraft.title"
+                    placeholder="Name your survey" />
+            </label>
+            <button type="button" class="delete-btn" (click)="surveyDraft.title = ''"></button>
+        </div>
 
-        <label>
-            <span>Choose category</span>
-            <select [(ngModel)]="surveyDraft.category">
-                <option value="" disabled selected>Select category</option>
-        
-                @for (c of categories(); track c.id) {
-                <option [value]="c.id">{{ c.label }}</option>
-                }
-            </select>
-        </label>
-          
+        <!-- RIGHT: Description (spans 2 rows) -->
+        <div class="meta-item description">
+            <label>
+                <span>Describing text (optional)</span>
+                <textarea class="styled-input description-input" [(ngModel)]="surveyDraft.description"
+                    placeholder="Describe your survey"></textarea>
+            </label>
+            <button type="button" class="delete-btn" (click)="surveyDraft.description = ''"></button>
+        </div>
 
-        <label>
-            <span>Describing text (optional)</span>
-            <textarea rows="3" placeholder="Describe your survey" [(ngModel)]="surveyDraft.description"></textarea>
-        </label>
+        <!-- LEFT: Date + Category -->
+        <div class="meta-item date-category">
+            <div class="date-row">
+                <label>
+                    <span>Set end date (optional)</span>
+                    <input class="styled-input" type="date" [(ngModel)]="surveyDraft.endDate" />
+                </label>
+                <button type="button" class="delete-btn" (click)="surveyDraft.endDate = ''"></button>
+            </div>
+
+            <div class="category-row">
+                <label>
+                    <div class="pulldown" [class.open]="categoryOpen">
+                        <select (click)="categoryOpen = !categoryOpen" (blur)="categoryOpen = false"
+                            [(ngModel)]="surveyDraft.category">
+                            <option value="" disabled selected>Select category</option>
+                            @for (c of categories(); track c.id) {
+                            <option [value]="c.id">{{ c.label }}</option>
+                            }
+                        </select>
+                    </div>
+
+                </label>
+            </div>
+        </div>
+
     </section>
 
-    <section class="questions">
+
+
+    <section class="questions-grid">
         @for (q of surveyDraft.questions; track i; let i = $index) {
 
         <div class="question-block">
-            <h2>{{ i + 1 }}. Question</h2>
+            <div class="question-header">
+                <h2>{{ i + 1 }}. Question</h2>
+            
+                <button type="button" class="delete-btn" (click)="removeQuestion(i)">
+                </button>
+            </div>
+            
 
-            <input type="text" placeholder="Question text" [(ngModel)]="q.text" />
-
-            <label class="allow-multiple">
-                <input type="checkbox" [(ngModel)]="q.allowMultiple" />
-                Allow multiple answers
-            </label>
+            <input type="text" class="styled-input" placeholder="Question text" [(ngModel)]="q.text" />
 
             <div class="answers">
-                <h3>Answers</h3>
+                <div class="answers-header">
+                    <h3>Answers</h3>
+                
+                    <label class="allow-multiple">
+                        <input type="checkbox" [(ngModel)]="q.allowMultiple" />
+                        Allow multiple answers
+                    </label>
+                </div>
+                  
 
                 @for (a of q.answers; track j; let j = $index) {
                 <div class="answer-row">
                     <span class="label">{{ toLetter(j) }}.</span>
-                    <input type="text" placeholder="Answer" [(ngModel)]="surveyDraft.questions[i].answers[j]" />
-                    <button type="button" class="icon-button" (click)="removeAnswer(i, j)">
-                        ✕
-                    </button>
+                    <input type="text" class="styled-input" placeholder="Answer" [(ngModel)]="surveyDraft.questions[i].answers[j]" />
+                    <button type="button" class="delete-btn"  (click)="removeAnswer(i, j)"></button>
                 </div>
                 }
 
@@ -66,18 +103,16 @@
         </div>
         }
 
-        <button type="button" class="link-button" (click)="addQuestion()">
+        <!-- Add next question Button -->
+        <button type="button" class="add-next-question"
+            [style.grid-column]="surveyDraft.questions.length % 2 === 0 ? '1' : '2'" (click)="addQuestion()">
             Add next question +
         </button>
     </section>
 
     <footer class="actions">
-        <button type="button" class="secondary">
-            Cancel
-        </button>
         <button type="button" class="primary" (click)="publish()">
             Publish
         </button>
     </footer>
 </div>
-  

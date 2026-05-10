@@ -1,0 +1,58 @@
+@use 'variables' as *;
+
+/* -----------------Pulldown------------------------------- */
+
+.pulldown {
+  position: relative;
+  display: inline-block;
+
+  select {
+    width: 100%;
+    padding: 7px 40px 7px 13px;
+    border: none;
+
+    border-radius: 5px;
+
+    background: $color-bg-light;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: none;
+
+    /* Hover */
+    &:hover {
+      background: #D9D9D91F;
+    }
+
+    &:focus {
+      outline: none;
+      background: #D9D9D91F;
+    }
+
+     option {
+        color: #000000;
+        background: #ffffff;
+      }
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+
+    background: url('/arrow_down.svg') center/contain no-repeat;
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    background-image: url('/arrow_down_activate.svg');
+  }
+
+  &.open::after {
+    background-image: url('/arrow_up_activate.svg');
+  }
+}

@@ -1,0 +1,28 @@
+@use 'variables' as *;
+
+.styled-input {
+
+  
+    padding: 7px 13px;
+    border: none;
+  
+    border-top-left-radius: 5px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+  
+    background: #ffffff;
+    color: $color-text-dark;
+    font-size: 1rem;
+  
+    &:focus {
+      outline: 2px solid $color-primary;
+    }
+  }
+  
+  textarea.styled-input {
+    height: auto;
+    min-height: 37px;
+    resize: vertical;
+  }
+  
