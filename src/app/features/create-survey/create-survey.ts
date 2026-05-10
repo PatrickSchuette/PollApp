@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { SurveyService } from '../../shared/services/survey.service';
 import { Router } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../../shared/services/category';
 
@@ -10,7 +9,7 @@ import { CategoryService } from '../../shared/services/category';
   standalone: true,
   templateUrl: './create-survey.html',
   styleUrls: ['./create-survey.scss'],
-  imports: [NgFor, NgIf, FormsModule],
+  imports: [FormsModule],
 })
 export class CreateSurveyComponent {
   surveyDraft = {
