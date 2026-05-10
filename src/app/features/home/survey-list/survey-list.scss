@@ -1,30 +1,57 @@
-.survey-list {
+@use "../../../../styles/variables" as *;
+
+.survey-list-wrapper {
+  max-height: 420px; /* 3 Karten sichtbar */
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.survey-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-  padding: 1rem 0;
-
-  /* Optional: leichte Animation beim Laden */
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeIn 0.3s ease forwards;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.6rem;
 }
 
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
+/* CARD */
+.survey-card {
+  width: 513px;
+  height: 127px;
+  padding: 12px 20px;
+  background: #D9D9D914;
+  border-radius: 5px 50px 5px 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #221227;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #D9D9D929;
   }
 }
 
-@media (max-width: 900px) {
-  .survey-list {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  }
+/* CATEGORY */
+.category {
+  font-family: Mulish;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 100%;
+  opacity: 0.9;
 }
 
-@media (max-width: 600px) {
-  .survey-list {
-    grid-template-columns: 1fr;
-  }
+/* TITLE */
+.title {
+  font-family: Mulish;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 110%;
+  margin: 0;
+}
+
+/* ENDS IN */
+.ends {
+  font-family: Mulish;
+  font-weight: 600;
+  font-size: 14px;
+  opacity: 0.8;
 }

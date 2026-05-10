@@ -1,21 +1,61 @@
-.ending-soon-slider {
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 1rem;
-    scroll-snap-type: x mandatory;
+@use "../../../../styles/variables" as *;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
+/* GRID */
+.ending-soon-grid {
+  display: flex;
+  gap: 2.4rem;
+  justify-content: center;
+}
+
+/* CARD */
+.ending-card {
+  width: 321px;
+  height: 340px; /* etwas höher wie im Screenshot */
+  padding: 48px 18px 32px 18px; /* oben mehr Luft, unten weniger */
+  background: #FDFBFF; /* leicht getönt, nicht reinweiß */
+  border-radius: 0 68px 0 0; /* weicher als 80px */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 18px;
+  color: #221227;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #F4E9FB;
   }
-  
-  .track {
-    display: flex;
-    gap: 1.5rem;
-  }
-  
-  .slide {
-    flex: 0 0 280px;
-    scroll-snap-align: start;
-  }
-  
+}
+
+/* CATEGORY */
+.category {
+  font-family: Mulish;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 100%;
+  color: #221227;
+  opacity: 0.9;
+}
+
+/* TITLE */
+.title {
+  font-family: Mulish;
+  font-weight: 700;
+  font-size: 28px; /* größer wie im Screenshot */
+  line-height: 110%; /* enger, aber nicht zu eng */
+  margin: 0;
+  color: #221227;
+  word-break: break-word;
+}
+
+/* BANNER */
+.ends-banner {
+  padding: 3px 6px;
+  background: $endingSoonBanner;
+  border-top-right-radius: 14px;
+  font-family: Mulish;
+  font-weight: 600;
+  font-size: 14px;
+  color: #221227;
+  width: fit-content;
+  margin-top: auto; /* Banner nach unten drücken */
+}

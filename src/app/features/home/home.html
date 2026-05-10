@@ -1,22 +1,43 @@
 <section class="home">
+
+    <header class="main-header">
+        <img src="./logo.svg" alt="Logo" class="logo" />
+    </header>
+
     <div class="hero">
         <div class="hero-text">
             <h1>Collect Feedback, Unlock Ideas</h1>
             <p>Create and share surveys in minutes – from team events to workplace culture. Collect opinions, engage
                 your audience, and turn feedback into action.</p>
-                <button class="button" (click)="goToCreate()">Create new survey</button>
+            <button class="button" (click)="goToCreate()">Create new survey</button>
         </div>
 
         <div class="hero-image"></div>
     </div>
 
-    <h2>Ending Soon</h2>
+    <h2>Your Surveys</h2>
+    Ending soon surveys
     <app-ending-soon [surveys]="endingSoon"></app-ending-soon>
+
+    <div class="filter-row">
+        <button class="btn-filter" [class.active]="filter === 'active'" (click)="setFilter('active')">
+            Active survey
+        </button>
     
-    <h2>Active Surveys</h2>
-    <app-survey-list [surveys]="active"></app-survey-list>
+        <button class="btn-filter" [class.active]="filter === 'past'" (click)="setFilter('past')">
+            Past survey
+        </button>
     
-    <h2>Past Surveys</h2>
-    <app-survey-list [surveys]="past"></app-survey-list>
+        <select class="pulldown">
+            <option>Sort by categories</option>
+        </select>
+          
+    </div>
+    
+      
+    <div class="survey-list-container">
+        <app-survey-list [surveys]="filter === 'active' ? active : past">
+        </app-survey-list>
+    </div>
     
 </section>

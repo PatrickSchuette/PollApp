@@ -1,6 +1,17 @@
-<div class="survey-list">
-    @for(s of surveys; track s.id) {
-    <app-survey-card [survey]="s"></app-survey-card>
-    }
+<div class="survey-list-wrapper">
+    <div class="survey-grid">
+        @for (s of surveys; track s.id) {
+        <div class="survey-card" (click)="openSurvey(s.id)">
+
+            <div class="category">{{ s.category }}</div>
+
+            <div class="title">{{ s.title }}</div>
+
+            <div class="ends">
+                Ends in {{ getDaysLeft(s.endDate) }} Days
+            </div>
+
+        </div>
+        }
+    </div>
 </div>
-  
