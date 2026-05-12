@@ -63,14 +63,14 @@
 .hero-image {
     width: 380px;
     height: 380px;
-    background-image: url("/tablet.svg");
+    background-image: url("/assets/img/tablet.svg");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     transition: background-image 0.2s ease;
 
     &:hover {
-        background-image: url("/tablet-hover.svg");
+        background-image: url("/assets/img/tablet-hover.svg");
     }
 }
 

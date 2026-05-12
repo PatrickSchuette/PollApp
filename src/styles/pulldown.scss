@@ -44,15 +44,15 @@
     width: 18px;
     height: 18px;
 
-    background: url('/arrow_down.svg') center/contain no-repeat;
+    background: url('/assets/img/arrow_down.svg') center/contain no-repeat;
     pointer-events: none;
   }
 
   &:hover::after {
-    background-image: url('/arrow_down_activate.svg');
+    background-image: url('/assets/img/arrow_down_activate.svg');
   }
 
   &.open::after {
-    background-image: url('/arrow_up_activate.svg');
+    background-image: url('/assets/img/arrow_up_activate.svg');
   }
 }
