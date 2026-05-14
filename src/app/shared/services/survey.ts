@@ -12,17 +12,17 @@ export class SurveyService {
   }
 
   getActiveSurveys() {
-    return this.surveys().filter(s => !s.isFinished);
+    return this.surveys().filter(s => !s.isfinished);
   }
 
   getPastSurveys() {
-    return this.surveys().filter(s => s.isFinished);
+    return this.surveys().filter(s => s.isfinished);
   }
 
   getEndingSoon() {
     return this.surveys()
-      .filter(s => !s.isFinished && s.endDate)
-      .sort((a, b) => new Date(a.endDate!).getTime() - new Date(b.endDate!).getTime())
+      .filter(s => !s.isfinished && s.enddate)
+      .sort((a, b) => new Date(a.enddate!).getTime() - new Date(b.enddate!).getTime())
       .slice(0, 3);
   }
 

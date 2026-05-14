@@ -14,7 +14,7 @@ import { CategoryService } from '../../shared/services/category';
 export class CreateSurveyComponent {
   surveyDraft = {
     title: '',
-    endDate: '',
+    enddate: '',
     category: '',
     description: '',
     questions: [

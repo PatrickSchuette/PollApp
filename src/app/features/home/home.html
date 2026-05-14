@@ -17,7 +17,7 @@
 
     <h2>Your Surveys</h2>
     Ending soon surveys
-    <app-ending-soon [surveys]="endingSoon"></app-ending-soon>
+    <app-ending-soon [surveys]="endingSoon()"></app-ending-soon>
 
     <div class="filter-row">
         <button class="btn-filter" [class.active]="filter === 'active'" (click)="setFilter('active')">
@@ -36,7 +36,7 @@
     
       
     <div class="survey-list-container">
-        <app-survey-list [surveys]="filter === 'active' ? active : past">
+        <app-survey-list [surveys]="filter === 'active' ? active() : past()">
         </app-survey-list>
     </div>
     

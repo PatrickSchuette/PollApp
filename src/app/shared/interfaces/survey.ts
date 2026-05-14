@@ -5,21 +5,8 @@ export interface Survey {
     title: string;
     description: string;
     category: string;
-    endDate: string;
-    questions: {
-        text: string;
-        allowMultiple: boolean;
-        answers: string[];
-    }[];
-    isFinished: boolean;
-
-    results?: {
-        questionIndex: number;
-        question: string;
-        options: {
-            label: string;
-            percent: number;
-        }[];
-    }[];
+    enddate: string;
+    isfinished: boolean;
 }
+
   

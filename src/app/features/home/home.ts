@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { SurveyService } from '../../shared/services/survey.service';
 import { SurveyListComponent } from './survey-list/survey-list';
 import { EndingSoonComponent } from './ending-soon/ending-soon';
@@ -14,11 +14,23 @@ import { Router } from '@angular/router';
 export class HomeComponent {
   private surveyService = inject(SurveyService);
 
-  endingSoon = this.surveyService.getEndingSoon();
-  active = this.surveyService.getActiveSurveys();
-  past = this.surveyService.getPastSurveys();
   filter = 'active';
+  endingSoon = signal<any[]>([]);
+  active = signal<any[]>([]);
+  past = signal<any[]>([]);
+
+  async ngOnInit() {
+    console.log('ENDING SOON:', await this.surveyService.getEndingSoon());
+    console.log('ACTIVE:', await this.surveyService.getActiveSurveys());
+    console.log('PAST:', await this.surveyService.getPastSurveys());
+
+    this.endingSoon.set(await this.surveyService.getEndingSoon());
+    this.active.set(await this.surveyService.getActiveSurveys());
+    this.past.set(await this.surveyService.getPastSurveys());
+  }
   
+
+
   private router = inject(Router);
 
   /** Navigates to the create survey page */

@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Survey } from '../../interfaces/survey';
-import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,7 +7,7 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './survey-card.html',
   styleUrls: ['./survey-card.scss'],
-  imports: [DatePipe],
+  imports: [],
 })
 export class SurveyCardComponent {
   @Input() survey!: Survey;
