@@ -20,10 +20,6 @@ export class HomeComponent {
   past = signal<any[]>([]);
 
   async ngOnInit() {
-    console.log('ENDING SOON:', await this.surveyService.getEndingSoon());
-    console.log('ACTIVE:', await this.surveyService.getActiveSurveys());
-    console.log('PAST:', await this.surveyService.getPastSurveys());
-
     this.endingSoon.set(await this.surveyService.getEndingSoon());
     this.active.set(await this.surveyService.getActiveSurveys());
     this.past.set(await this.surveyService.getPastSurveys());

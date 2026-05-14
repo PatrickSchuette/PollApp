@@ -73,10 +73,11 @@ export class CreateSurveyComponent {
   }
 
   /**
-   *  Removes a question from the survey draft.
-   * @param index 
+   * Removes a question from the survey draft.
+   *
+   * @param index - Index of the question to remove.
    */
-  removeQuestion(index: number) {
+  removeQuestion(index: number): void {
     this.surveyDraft.questions.splice(index, 1);
   }
 

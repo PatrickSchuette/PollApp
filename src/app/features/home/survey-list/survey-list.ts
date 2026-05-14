@@ -18,7 +18,7 @@ export class SurveyListComponent {
   /**
    * Calculates the number of days remaining until a survey ends.
    * 
-   * @param {string} dateString - The end date of the survey in ISO format.
+   * @param {string | null | undefined} dateString - The end date of the survey in ISO format.
    * @returns {number} Number of days left until the survey ends.
    */
   getDaysLeft(dateString: string | null | undefined): number {
