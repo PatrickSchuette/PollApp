@@ -3,13 +3,11 @@
 @use '../../../styles/input-style' as *;
 @use '../../../styles/pulldown' as *;
 
-/* PAGE BACKGROUND */
 :host {
   display: block;
   background: #ffffff;
 }
 
-/* CREATE SURVEY CONTAINER */
 .create-survey {
   background: $color-bg-dark;
   padding: 2rem;
@@ -23,7 +21,6 @@
   gap: 0;
 }
 
-/* HEADER */
 .header {
   display: flex;
   flex-direction: column;
@@ -70,7 +67,6 @@
   }
 }
 
-/* META SECTION */
 .meta {
   background: $color-bg-light;
   padding: 1.8rem;
@@ -122,22 +118,20 @@
   }
 }
 
-/* DELETE BUTTON (GLOBAL) */
 .delete-btn {
   width: 32px;
   height: 32px;
-  background: url('/assets/img/delete.svg') center/20px no-repeat;
+  background: url('#{$baseURL}/assets/img/delete.svg') center/20px no-repeat;
   border: none;
   cursor: pointer;
   opacity: 0.7;
 
   &:hover {
-    background-image: url('/assets/img/delete_hover.svg');
+    background-image: url('#{$baseURL}/assets/img/delete_hover.svg');
     opacity: 1;
   }
 }
 
-/* QUESTIONS GRID WRAPPER */
 .questions-grid {
   background: $color-bg-light;
   padding: 0 1.8rem 1.8rem;
@@ -147,14 +141,12 @@
   gap: 2rem;
 }
 
-/* QUESTION BLOCK */
 .question-block {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
 
-/* QUESTION HEADER (TITLE + DELETE) */
 .question-header {
   display: flex;
   justify-content: space-between;
@@ -168,7 +160,6 @@
   }
 }
 
-/* QUESTION DELETE BUTTON (nutzt delete-btn) */
 .question-header .delete-btn {
   flex-shrink: 0;
 }
@@ -228,7 +219,6 @@
   }
 }
 
-/* ADD NEXT QUESTION BUTTON */
 .add-next-wrapper {
   align-self: start;
 }

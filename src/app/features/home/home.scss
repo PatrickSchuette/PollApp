@@ -32,7 +32,6 @@
   }
   
 
-/* HERO SECTION */
 .hero {
     display: flex;
     align-items: center;
@@ -59,18 +58,17 @@
     }
 }
 
-/* HERO IMAGE */
 .hero-image {
     width: 380px;
     height: 380px;
-    background-image: url("/assets/img/tablet.svg");
+    background-image: url("#{$baseURL}/assets/img/tablet.svg");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     transition: background-image 0.2s ease;
 
     &:hover {
-        background-image: url("/assets/img/tablet-hover.svg");
+        background-image: url("#{$baseURL}/assets/img/tablet-hover.svg");
     }
 }
 
@@ -94,7 +92,6 @@
   box-shadow: 0 0 0 rgba(0,0,0,0); // clean look
 }
 
-/* CATEGORY */
 .ending-card .category {
   font-family: Mulish;
   font-weight: 600;
@@ -115,7 +112,6 @@
   word-break: break-word;
 }
 
-/* BANNER: Ends in X Days */
 .ending-card .ends-banner {
   align-self: flex-end;
   padding: 3px 6px;
