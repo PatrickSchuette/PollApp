@@ -24,6 +24,12 @@
   border: none;
   cursor: pointer;
   font-weight: 600;
+
+  &:disabled {
+    background: $color-primary-disabled;
+    color: #ffffff;
+    cursor: not-allowed;
+  }
 }
 
 &-secondary {

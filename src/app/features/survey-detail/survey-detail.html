@@ -31,10 +31,12 @@
                 <div class="answers">
                     @for (o of q.options; track o.id; let j = $index) {
 
-                        <label class="answer-option" [class.selected]="answers()[i]?.includes(j)"
+                        <label class="answer-option" [class.selected]="answers()[i]?.includes(j)" [class.disabled]="isClosed()"
                             (click)="!isClosed() && toggleAnswer(i, j, false)">
+
                  
                             <input type="radio" name="q{{ i }}" [checked]="answers()[i]?.[0] === j" [disabled]="isClosed()" />
+
                      
                         <span class="label">{{ j | letter }}.</span>
                         <span>{{ o.text }}</span>
