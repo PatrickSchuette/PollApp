@@ -194,20 +194,21 @@ export class SurveyService {
   }
 
   /**
-   * Inserts or increments a vote for an answer.
-   *
-   * @param surveyId - Survey ID.
-   * @param questionIndex - Index of the question.
-   * @param selectedOptions - Selected answer indices.
-   */
+ * Inserts or increments a vote for a single selected option.
+ *
+ * @param surveyId - Survey ID.
+ * @param questionIndex - Index of the question.
+ * @param selectedOption - Index of the selected option.
+ */
   async submitVote(
     surveyId: string,
     questionIndex: number,
-    selectedOptions: number[]
+    selectedOption: number
   ): Promise<void> {
-    const survey = await this.getSurveyWithQuestions(surveyId);
-    const question = survey.questions[questionIndex];
-    const option = question.options[selectedOptions[0]];
+
+    const survey: any = await this.getSurveyWithQuestions(surveyId);
+    const question: any = survey.questions[questionIndex];
+    const option: any = question.options[selectedOption];
 
     const { data: existing } = await this.supabase
       .from('votes')
@@ -231,10 +232,11 @@ export class SurveyService {
       question_index: questionIndex,
       question_text: question.title,
       answer_text: option.text,
-      selected_options: selectedOptions,
+      selected_options: [selectedOption],
       vote_count: 1
     });
 
     if (error) throw error;
   }
+
 }

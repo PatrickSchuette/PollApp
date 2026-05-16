@@ -1,4 +1,4 @@
-<div class="create-survey">
+<form class="create-survey">
 
     <header class="header">
         <span class="badge">Draft</span>
@@ -14,7 +14,7 @@
         <div class="meta-item name">
             <label>
                 <span>Survey name</span>
-                <input class="styled-input" type="text" [(ngModel)]="surveyDraft.title"
+                <input class="styled-input" type="text" name="surveyTitle" [(ngModel)]="surveyDraft.title"
                     placeholder="Name your survey" />
             </label>
             <button type="button" class="delete-btn" (click)="surveyDraft.title = ''"></button>
@@ -23,8 +23,8 @@
         <div class="meta-item description">
             <label>
                 <span>Describing text (optional)</span>
-                <textarea class="styled-input description-input" [(ngModel)]="surveyDraft.description"
-                    placeholder="Describe your survey"></textarea>
+                <textarea class="styled-input description-input" name="surveyDescription"
+                    [(ngModel)]="surveyDraft.description" placeholder="Describe your survey"></textarea>
             </label>
             <button type="button" class="delete-btn" (click)="surveyDraft.description = ''"></button>
         </div>
@@ -33,7 +33,7 @@
             <div class="date-row">
                 <label>
                     <span>Set end date (optional)</span>
-                    <input class="styled-input" type="date" [(ngModel)]="surveyDraft.enddate" />
+                    <input class="styled-input" type="date" name="surveyEndDate" [(ngModel)]="surveyDraft.enddate" />
                 </label>
                 <button type="button" class="delete-btn" (click)="surveyDraft.enddate = ''"></button>
             </div>
@@ -41,8 +41,8 @@
             <div class="category-row">
                 <label>
                     <div class="pulldown" [class.open]="categoryOpen">
-                        <select (click)="categoryOpen = !categoryOpen" (blur)="categoryOpen = false"
-                            [(ngModel)]="surveyDraft.category">
+                        <select name="surveyCategory" (click)="categoryOpen = !categoryOpen"
+                            (blur)="categoryOpen = false" [(ngModel)]="surveyDraft.category">
                             <option value="" disabled>Select category</option>
                             @for (c of categories(); track c.id) {
                             <option [value]="c.id">{{ c.label }}</option>
@@ -65,7 +65,8 @@
                 <button type="button" class="delete-btn" (click)="removeQuestion(i)"></button>
             </div>
 
-            <input type="text" class="styled-input" placeholder="Question text" [(ngModel)]="q.text" />
+            <input type="text" class="styled-input" placeholder="Question text" [id]="'question-' + q.id"
+                [name]="'question-' + q.id" [(ngModel)]="q.text" />
 
             <div class="answers">
 
@@ -73,21 +74,26 @@
                     <h3>Answers</h3>
 
                     <label class="allow-multiple">
-                        <input type="checkbox" [(ngModel)]="q.allowMultiple" />
+                        <input type="checkbox" [name]="'allowMultiple-' + i" [(ngModel)]="q.allowMultiple" />
                         Allow multiple answers
                     </label>
                 </div>
 
-                @for (a of q.answers; track j; let j = $index) {
+                @for (a of q.answers; let j = $index; track j) {
                 <div class="answer-row">
                     <span class="label">{{ toLetter(j) }}.</span>
-                    <input type="text" class="styled-input" placeholder="Answer"
-                        [(ngModel)]="surveyDraft.questions[i].answers[j]" />
-                    <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
+
+                    <input type="text" class="styled-input" placeholder="Answer" [id]="'answer-' + q.id + '-' + j"
+                        [name]="'answer-' + q.id + '-' + j" [(ngModel)]="surveyDraft.questions[i].answers[j]" />
+
+                    <button type="button" class="delete-btn" (click)="removeAnswer(i, j)">
+                    </button>
                 </div>
                 }
 
-                <button type="button" class="link-button" (click)="addAnswer(i)">Add answer +</button>
+                <button type="button" class="link-button" (click)="addAnswer(i)">
+                    Add answer +
+                </button>
 
             </div>
         </div>
@@ -104,13 +110,14 @@
         <button type="button" class="button btn-primary" [disabled]="!isValid()" (click)="publish()">
             Publish
         </button>
-          
     </footer>
 
     @if (successDialog) {
     <div class="dialog success">
         <h2>Survey has been created successfully! You will be forwarded to the main page soon.</h2>
-        <button  class="button btn-primary" (click)="router.navigate(['/survey', createdSurveyId])">View Survey</button>
+        <button class="button btn-primary" (click)="router.navigate(['/survey', createdSurveyId])">
+            View Survey
+        </button>
     </div>
     }
 
@@ -118,8 +125,8 @@
     <div class="dialog error">
         <h2>Error creating survey</h2>
         <p>{{ errorMessage }}</p>
-        <button  (click)="errorDialog = false">Close</button>
+        <button (click)="errorDialog = false">Close</button>
     </div>
     }
 
-</div>
+</form>

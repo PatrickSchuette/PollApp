@@ -4,17 +4,19 @@
         @for (s of surveys; track s.id) {
         <div class="survey-card" (click)="openSurvey(s.id)">
 
-            <div class="category">{{ s.category }}</div>
+            <div class="category fontYellow">{{ s.category }}</div>
 
-            <div class="title">{{ s.title }}</div>
+            <div class="title fontWhite">{{ s.title }}</div>
 
-            <div class="ends">
-                @if (s.enddate != null) {
-                    Ends in {{ getDaysLeft(s.enddate) }} Days
-                } @else {
-                    No end date
-                }
-            </div>
+            <div class="ends ends-banner">
+                @let days = getDaysLeft(s.enddate);
+            
+                @if (days === null) {
+                No end date
+                } @else if (days > 0) {
+                Ends in {{ days }} Days
+                } @else if (days < 0) { Ended {{ -days }} Days ago } @else { Ends today } </div>
+             
 
         </div>
         } 

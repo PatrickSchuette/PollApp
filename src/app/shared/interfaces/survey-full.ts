@@ -14,6 +14,7 @@ export interface Question {
     id: string;
     title: string;
     position: number;
+    allow_multiple: boolean; 
     options: Option[];
 }
 

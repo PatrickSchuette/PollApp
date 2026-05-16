@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SurveyService } from '../../shared/services/survey.service';
 import { LetterPipe } from '../../shared/pipes/letter.pipe';
 import { SurveyFull } from '../../shared/interfaces/survey-full';
+import { getDaysLeft } from '../../shared/services/date.utils';
 
 /**
  * Displays a full survey including questions and answer options.
@@ -31,6 +32,8 @@ export class SurveyDetailComponent {
   hasVotes = signal(false);
   isClosed = signal(false);
 
+  getDaysLeft = getDaysLeft;
+
   private route = inject(ActivatedRoute);
   private surveyService = inject(SurveyService);
   private router = inject(Router);
@@ -56,8 +59,6 @@ export class SurveyDetailComponent {
     );
   }
   
-  
-
   /**
    * Toggles a selected answer for a question.
    *
@@ -77,29 +78,31 @@ export class SurveyDetailComponent {
   }
 
   /**
-   * Submits all selected answers and shows success dialog.
+   * Sends all selected answers as individual votes.
    */
   async completeSurvey(): Promise<void> {
-    const survey = this.survey();
+    const survey: SurveyFull | null = this.survey();
     if (!survey) return;
 
-    const answers = this.answers();
+    const answers: { [key: number]: number[] } = this.answers();
 
     for (const qIndex in answers) {
-      await this.surveyService.submitVote(
-        survey.id,
-        Number(qIndex),
-        answers[qIndex]
-      );
+      for (const aIndex of answers[qIndex]) {
+        await this.surveyService.submitVote(
+          survey.id,
+          Number(qIndex),
+          aIndex
+        );
+      }
     }
 
     this.showSuccess.set(true);
-
     setTimeout(() => {
       this.showSuccess.set(false);
       this.router.navigate(['/']);
     }, 1500);
-  } 
+  }
+  
 
   /**
    * Navigates to the create survey page.

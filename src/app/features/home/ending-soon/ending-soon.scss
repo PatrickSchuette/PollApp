@@ -1,5 +1,6 @@
 @use "../../../../styles/variables" as *;
 
+
 /* GRID */
 .ending-soon-grid {
   display: flex;
@@ -10,10 +11,10 @@
 /* CARD */
 .ending-card {
   width: 321px;
-  height: 340px; /* etwas höher wie im Screenshot */
-  padding: 48px 18px 32px 18px; /* oben mehr Luft, unten weniger */
-  background: #FDFBFF; /* leicht getönt, nicht reinweiß */
-  border-radius: 0 68px 0 0; /* weicher als 80px */
+  height: 340px; 
+  padding: 48px 18px 32px 18px; 
+  background: #FDFBFF; 
+  border-radius: 0 68px 0 0; 
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -40,22 +41,9 @@
 .title {
   font-family: Mulish;
   font-weight: 700;
-  font-size: 28px; /* größer wie im Screenshot */
-  line-height: 110%; /* enger, aber nicht zu eng */
+  font-size: 28px; 
+  line-height: 110%; 
   margin: 0;
   color: #221227;
   word-break: break-word;
-}
-
-/* BANNER */
-.ends-banner {
-  padding: 3px 6px;
-  background: $endingSoonBanner;
-  border-top-right-radius: 14px;
-  font-family: Mulish;
-  font-weight: 600;
-  font-size: 14px;
-  color: #221227;
-  width: fit-content;
-  margin-top: auto; /* Banner nach unten drücken */
 }
