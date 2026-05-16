@@ -1,46 +1,62 @@
 @use './variables' as *;
-
+@use './variables' as *;
 
 .button {
-  background: $color-primary;
-  color: $color-text-light;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: $radius-default;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  &:hover {
-    background: $color-primary-hover;
-  }
-
-
-&-primary {
-  background: $color-primary;
-  color: $color-text-light;
   padding: 0.8rem 1.4rem;
   border-radius: $radius-default;
   border: none;
-  cursor: pointer;
+
   font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
 
   &:disabled {
     background: $color-primary-disabled;
-    color: #ffffff;
+    color: $color-text-light;
     cursor: not-allowed;
+    opacity: 0.6;
   }
 }
 
-&-secondary {
+.btn-primary {
+  background: $color-primary;
+  color: $color-text-light;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-hover;
+  }
+}
+
+.btn-secondary {
   background: transparent;
   color: $color-primary;
-  padding: 0.8rem 1.4rem;
-  border-radius: $radius-default;
   border: 2px solid $color-primary;
-  cursor: pointer;
-  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    background: rgba($color-primary, 0.1);
+  }
 }
+
+.btn-add-question {
+  align-self: start;
+  justify-self: start;
+  display: inline-block;
+  padding: 0.8rem 1.4rem;
+  height: auto;
+  background: $color-primary;
+  color: $color-text-light;
+  border-radius: $radius-default;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-hover;
+  }
 }
 
 .btn-filter {
@@ -65,3 +81,4 @@
     background: #FFB770;
   }
 }
+

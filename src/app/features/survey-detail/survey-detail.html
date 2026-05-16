@@ -4,7 +4,7 @@
             <img src="./assets/img/logo.svg" alt="Logo" class="logo" />
         </div>
 
-        <button class="create-btn" (click)="goToCreateSurvey()">Create survey</button>
+        <button class="button btn-primary" (click)="goToCreateSurvey()">Create survey</button>
     </div>
 </header>
 
@@ -47,7 +47,7 @@
             </div>
             }
 
-            <button class="primary" (click)="completeSurvey()" [disabled]="isClosed()">Complete survey</button>
+            <button class="button btn-primary" (click)="completeSurvey()" [disabled]="isClosed()">Complete survey</button>
         </div>
 
         <div class="right">

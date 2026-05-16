@@ -6,6 +6,8 @@
 :host {
   display: block;
   background: #ffffff;
+  position: relative;
+  z-index: 1;
 }
 
 .create-survey {
@@ -223,35 +225,33 @@
   align-self: start;
 }
 
-.add-next-question {
-  padding: 0.8rem 1.4rem;
-  background: $color-primary;
-  color: $color-text-light;
-  border: none;
-  border-radius: $radius-default;
-  font-weight: 600;
-  cursor: pointer;
-  height: auto;
-  align-self: start;
-  justify-self: start;
-}
-
 /* FOOTER ACTIONS */
 .actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+}
 
-  .primary {
-    background: $color-primary;
-    color: $color-text-light;
-    padding: 0.8rem 1.4rem;
-    border-radius: $radius-default;
-    font-weight: 700;
-    cursor: pointer;
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  z-index: 99999;
+  min-width: 300px;
+  text-align: center;
+  color: black;
 
-    &:hover {
-      background: $color-primary-hover;
-    }
+  &.success {
+    border: 2px solid #4caf50;
+  }
+
+  &.error {
+    border: 2px solid #f44336;
   }
 }
+

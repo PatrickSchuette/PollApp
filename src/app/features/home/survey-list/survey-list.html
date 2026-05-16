@@ -1,5 +1,6 @@
 <div class="survey-list-wrapper">
     <div class="survey-grid">
+
         @for (s of surveys; track s.id) {
         <div class="survey-card" (click)="openSurvey(s.id)">
 
@@ -8,10 +9,16 @@
             <div class="title">{{ s.title }}</div>
 
             <div class="ends">
-                Ends in {{ getDaysLeft(s.enddate) }} Days
+                @if (s.enddate != null) {
+                    Ends in {{ getDaysLeft(s.enddate) }} Days
+                } @else {
+                    No end date
+                }
             </div>
 
         </div>
-        }
+        } 
+
     </div>
 </div>
+  
