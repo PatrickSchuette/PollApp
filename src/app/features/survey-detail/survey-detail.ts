@@ -31,6 +31,7 @@ export class SurveyDetailComponent {
   results = signal<any[]>([]);
   hasVotes = signal(false);
   isClosed = signal(false);
+  showResults = false;
 
   getDaysLeft = getDaysLeft;
 
@@ -143,5 +144,9 @@ export class SurveyDetailComponent {
     this.hasVotes.set(votes.length > 0);
 
   }
-  
+
+  toggleResults() {
+    this.showResults = !this.showResults;
+  }
+
 }
