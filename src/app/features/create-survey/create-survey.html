@@ -99,8 +99,7 @@
         </div>
         }
 
-        <button type="button" class="button btn-add-question"
-            [style.grid-column]="surveyDraft.questions.length % 2 === 0 ? '1' : '2'" (click)="addQuestion()">
+        <button class="button btn-add-question" (click)="addQuestion()">
             Add next question +
         </button>
 

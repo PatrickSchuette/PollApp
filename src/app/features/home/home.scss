@@ -1,85 +1,189 @@
 @use "../../../styles/variables" as *;
+@use "../../../styles/components" as *;
 
 :host {
-    display: block;
-    min-height: 100vh;
-    width: 100%;
-    background: $color-bg-dark;
-  }
-  
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+  background: $color-bg-dark;
+}
 
 .home {
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  max-width: var(--maxWidth);
+  margin: 0 auto;
+  overflow: hidden;
+
+  @media (min-width: $bp-md) {
+    padding: 3rem 4rem;
+  }
+
+  @media (min-width: $bp-lg) {
     padding: 4rem 6rem;
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-    max-width: var(--maxWidth);
-    margin: 0 auto;
+  }
+}
+
+h2 {
+  color: $fontcolor-yellow;
+  font-family: "Nerko One", cursive;
+  font-size: 1.6rem;
+  text-align: center;
+  margin: 3rem 0 1.5rem;
+
+  @media (min-width: $bp-md) {
+    font-size: 2rem;
+  }
+
+  @media (min-width: $bp-lg) {
+    font-size: 2.4rem;
+  }
+}
+
+.section-subtitle {
+  color: $color-text-white;
+  opacity: 0.8;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-top: -0.5rem;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: $bp-md) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: $bp-lg) {
+    text-align: left;
+    margin-left: 0.2rem;
+  }
 }
 
 .main-header {
-    width: 100%;
-    max-width: var(--maxWidth);
-    margin: 0 auto;
-    padding: 2rem 2rem 0;
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo {
-    height: 48px;
-    width: auto;
-  }
-  
+  width: 100%;
+  max-width: var(--maxWidth);
+  margin: 0 auto;
+  padding: 1.2rem 1.6rem 0;
+  display: flex;
+  align-items: center;
 
-.hero {
-    display: flex;
+  @media (min-width: $bp-md) {
+    padding: 1.6rem 2rem 0;
+  }
+
+  @media (min-width: $bp-lg) {
+    padding: 2rem 2rem 0;
+  }
+}
+
+.logo {
+  width: auto;
+  height: 40px;
+
+  @media (min-width: $bp-md) {
+    height: 44px;
+  }
+
+  @media (min-width: $bp-lg) {
+    height: 48px;
+  }
+}
+
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+
+  @media (min-width: $bp-lg) {
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: 4rem;
+  }
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+
+  @media (min-width: $bp-lg) {
+    flex: 1;
+    order: 1;
+  }
+}
+
+.hero-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: $fontcolor-yellow;
+  font-family: "Nerko One", cursive;
+  text-align: center;
+
+  @media (min-width: $bp-md) {
+    font-size: 2.6rem;
+  }
+
+  @media (min-width: $bp-lg) {
+    font-size: 3rem;
+    text-align: left;
+  }
 }
 
 .hero-text {
-    max-width: 500px;
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.8;
+  color: $color-text-white;
+  text-align: center;
 
-    & h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: $fontcolor-yellow;
-        font-family: "Nerko One", cursive;
-    }
+  @media (min-width: $bp-md) {
+    font-size: 1.1rem;
+  }
 
-    & p {
-        font-size: 1.2rem;
-        line-height: 1.6;
-        opacity: 0.8;
-        margin-bottom: 2rem;
-    }
+  @media (min-width: $bp-lg) {
+    font-size: 1.2rem;
+    text-align: left;
+  }
+}
+
+.hero-btn {
+  display: flex;
+  justify-content: center;
+
+  @media (min-width: $bp-lg) {
+    justify-content: flex-start;
+  }
 }
 
 .hero-image {
+  background-image: url("#{$baseURL}/assets/img/tablet.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: background-image 0.2s ease;
+  width: 240px;
+  height: 240px;
+  margin: 0 auto;
+
+  &:hover {
+    background-image: url("#{$baseURL}/assets/img/tablet-hover.svg");
+  }
+
+  @media (min-width: $bp-md) {
+    width: 300px;
+    height: 300px;
+  }
+
+  @media (min-width: $bp-lg) {
     width: 380px;
     height: 380px;
-    background-image: url("#{$baseURL}/assets/img/tablet.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    transition: background-image 0.2s ease;
-
-    &:hover {
-        background-image: url("#{$baseURL}/assets/img/tablet-hover.svg");
-    }
+    margin: 0;
+    order: 2;
+  }
 }
 
-.home h2 {
-    color: $fontcolor-yellow;
-    font-family: "Nerko One", cursive;
-    font-size: 2.4rem;
-    text-align: center;
-    margin: 3rem 0 1.5rem;
-  }
-  
 .ending-card {
   background: #ffffff;
   border-radius: 0 80px 0 0;
@@ -89,7 +193,8 @@
   gap: 1rem;
   color: #221227;
   width: 100%;
-  box-shadow: 0 0 0 rgba(0,0,0,0); // clean look
+  max-width: 320px;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
 .ending-card .category {
@@ -97,26 +202,28 @@
   font-weight: 600;
   font-size: 14px;
   line-height: 100%;
-  letter-spacing: 0;
   opacity: 0.9;
 }
 
-/* TITLE */
 .ending-card .title {
   font-family: Mulish;
   font-weight: 700;
   font-size: 26px;
   line-height: 100%;
-  letter-spacing: 0;
   margin: 0;
   word-break: break-word;
 }
 
 .filter-row {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 0 auto;
+  max-width: var(--maxWidth);
+
+  @media (min-width: $bp-md) {
+    flex-direction: row;
     gap: 1rem;
-    margin: 0 auto;
-    max-width: var(--maxWidth);
   }
-  
+}

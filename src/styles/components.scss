@@ -1,23 +1,39 @@
 @use "./variables" as *;
 
 .ends-banner {
-    align-self: flex-end;
-    padding: 3px 6px;
-    background: var(--endingSoonBanner);
-    background: $endingSoonBanner;
-    border-top-right-radius: 14px;
-    font-family: Mulish;
-    font-weight: 600;
-    font-size: 14px;
-    color: #221227;
-    width: fit-content;
-    margin-top: auto;
-  }
+  align-self: flex-end;
+  padding: 3px 6px;
+  background: var(--endingSoonBanner);
+  background: $endingSoonBanner;
+  border-top-right-radius: 14px;
+  font-family: Mulish;
+  font-weight: 600;
+  font-size: 14px;
+  color: #221227;
+  width: fit-content;
+  margin-top: auto;
+}
 
-  .fontYellow {
-    color: $yellow;
-  }
+.fontYellow {
+  color: $color-text-yellow;
+}
 
-  .fontWhite {
-    color: #ffffff;
+.fontWhite {
+  color: $color-text-white;
+}
+
+.onlyMobile {
+  display: block;
+
+  @media (min-width: $bp-lg) {
+    display: none !important;
   }
+}
+
+.onlyDesktop {
+  display: none;
+
+  @media (min-width: $bp-lg) {
+    display: block !important;
+  }
+}

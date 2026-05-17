@@ -4,12 +4,18 @@
         <img src="./assets/img/logo.svg" alt="Logo" class="logo" />
     </header>
 
-    <div class="hero">
-        <div class="hero-text">
-            <h1>Collect Feedback, Unlock Ideas</h1>
-            <p>Create and share surveys in minutes – from team events to workplace culture. Collect opinions, engage
-                your audience, and turn feedback into action.</p>
-            <button class="button btn-primary" (click)="goToCreate()">Create new survey</button>
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Collect Feedback, Unlock Ideas</h1>
+
+            <p class="hero-text">
+                Create and share surveys in minutes – from team events to workplace culture.
+                Collect opinions, engage your audience, and turn feedback into action.
+            </p>
+
+            <div class="hero-btn">
+                <button class="button btn-primary" (click)="goToCreate()">Create new survey</button>
+            </div>
         </div>
 
         <div class="hero-image"></div>
@@ -23,21 +29,19 @@
         <button class="btn-filter" [class.active]="filter === 'active'" (click)="setFilter('active')">
             Active survey
         </button>
-    
+
         <button class="btn-filter" [class.active]="filter === 'past'" (click)="setFilter('past')">
             Past survey
         </button>
-    
+
         <select class="pulldown" name="pulldown">
             <option>Sort by categories</option>
         </select>
-          
     </div>
-    
-      
+
     <div class="survey-list-container">
-        <app-survey-list [surveys]="filter === 'active' ? active() : past()">
-        </app-survey-list>
+        <app-survey-list [surveys]="filter === 'active' ? active() : past()"></app-survey-list>
     </div>
-    
+
 </section>
+  

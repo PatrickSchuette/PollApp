@@ -6,11 +6,20 @@
   display: flex;
   gap: 2.4rem;
   justify-content: center;
+
+  @media (min-width: var(--bp-sm)) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: var(--bp-lg)) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* CARD */
 .ending-card {
-  width: 321px;
+  width: 100%;
+  max-width: 320px;
   height: 340px; 
   padding: 48px 18px 32px 18px; 
   background: #FDFBFF; 
@@ -24,6 +33,11 @@
 
   &:hover {
     background: #F4E9FB;
+  }
+
+  @media (min-width: var(--bp-lg)) {
+    padding: 48px 18px 32px;
+    max-width: 321px;
   }
 }
 
