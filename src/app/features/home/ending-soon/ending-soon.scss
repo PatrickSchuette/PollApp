@@ -1,43 +1,53 @@
 @use "../../../../styles/variables" as *;
 
-
-/* GRID */
 .ending-soon-grid {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 2.4rem;
-  justify-content: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #FFB770 transparent;
 
-  @media (min-width: var(--bp-sm)) {
-    grid-template-columns: repeat(2, 1fr);
+  &::-webkit-scrollbar {
+    height: 8px;
   }
 
-  @media (min-width: var(--bp-lg)) {
-    grid-template-columns: repeat(3, 1fr);
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #FFB770;
+    border-radius: 10px;
   }
 }
 
-/* CARD */
 .ending-card {
-  width: 100%;
-  max-width: 320px;
-  height: 340px; 
-  padding: 48px 18px 32px 18px; 
-  background: #FDFBFF; 
-  border-radius: 0 68px 0 0; 
+  width: 250px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  height: 233px;
+  padding: 24px 16px;
+  background: #FAF5FE;
+  border-radius: 0 80px 0 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  gap: 18px;
-  color: #221227;
+  gap: 10px;
+  cursor: pointer;
   transition: background 0.2s ease;
 
   &:hover {
     background: #F4E9FB;
   }
 
-  @media (min-width: var(--bp-lg)) {
-    padding: 48px 18px 32px;
-    max-width: 321px;
+  @media (min-width: $bp-lg) {
+    width: 321px;
+    height: 310px;
+    padding: 40px 18px;
   }
 }
 
@@ -55,8 +65,8 @@
 .title {
   font-family: Mulish;
   font-weight: 700;
-  font-size: 28px; 
-  line-height: 110%; 
+  font-size: 28px;
+  line-height: 110%;
   margin: 0;
   color: #221227;
   word-break: break-word;
