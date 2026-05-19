@@ -3,12 +3,6 @@ import { Survey } from '../../../shared/interfaces/survey';
 import { Router } from '@angular/router';
 import { getDaysLeft } from '../../../shared/services/date.utils';
 
-/**
- * Component displaying surveys that are ending soon.
- * 
- * Receives a list of surveys via @Input() and renders them in a grid layout.
- * Each survey card is clickable and navigates to the survey detail page.
- */
 @Component({
   selector: 'app-ending-soon',
   standalone: true,
@@ -17,20 +11,29 @@ import { getDaysLeft } from '../../../shared/services/date.utils';
   imports: [],
 })
 export class EndingSoonComponent {
-  /** List of surveys passed from the parent component */
   @Input() surveys: Survey[] = [];
+  @Input() maxDays = 30; // kommt jetzt von außen
 
   getDaysLeft = getDaysLeft;
 
-  /** Angular Router instance for navigation */
   private router = inject(Router);
-    
-  /**
-   * Navigates to the survey detail page.
-   * 
-   * @param {string} id - The UUID of the survey to open.
-   */
+
   openSurvey(id: string): void {
     this.router.navigate(['/survey', id]);
+  }
+
+  getProgressPercent(enddate: string): number {
+    const today = new Date();
+    const end = new Date(enddate);
+
+    const diff = Math.max(
+      0,
+      Math.floor((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    );
+
+    if (!this.maxDays) return 0;
+
+    const percent = (1 - diff / this.maxDays) * 100;
+    return Math.min(100, Math.max(0, Math.round(percent)));
   }
 }

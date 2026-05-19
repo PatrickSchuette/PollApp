@@ -10,6 +10,11 @@
         <div class="ends-banner">
             Ends in {{ getDaysLeft(s.enddate) }} Days
         </div>
+
+        <div class="progress-bar">
+            <div class="fill" [style.width]="getProgressPercent(s.enddate) + '%'"></div>
+        </div>
     </div>
     }
 </div>
+  
