@@ -1,0 +1,27 @@
+<h2>Survey results <span class="fontYellow">Live</span></h2>
+
+@if (!hasVotes) {
+<p class="no-results">Results will be shown here after participants complete the survey.</p>
+<p class="no-results">There are no answers yet.</p>
+}
+
+@else {
+@for (r of results; track r.question; let qi = $index) {
+<div class="result-block">
+    <h3>{{ qi + 1 }}. {{ r.question }}</h3>
+
+    @for (o of r.options; track o.label) {
+    <div class="result-row">
+        <span class="label">{{ o.label | letter }}.</span>
+    
+        <div class="bar">
+            <div class="fill" [style.width]="o.percent + '%'"></div>
+        </div>
+    
+        <span class="percent">{{ o.percent }}%</span>
+    </div>
+    }
+      
+</div>
+}
+}

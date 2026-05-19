@@ -4,6 +4,7 @@ import { SurveyService } from '../../shared/services/survey.service';
 import { LetterPipe } from '../../shared/pipes/letter.pipe';
 import { SurveyFull } from '../../shared/interfaces/survey-full';
 import { getDaysLeft } from '../../shared/services/date.utils';
+import { SurveyResultsComponent } from '../survey-results/survey-results';
 
 /**
  * Displays a full survey including questions and answer options.
@@ -14,7 +15,7 @@ import { getDaysLeft } from '../../shared/services/date.utils';
   standalone: true,
   templateUrl: './survey-detail.html',
   styleUrls: ['./survey-detail.scss'],
-  imports: [LetterPipe],
+  imports: [LetterPipe, SurveyResultsComponent],
 })
 export class SurveyDetailComponent {
 

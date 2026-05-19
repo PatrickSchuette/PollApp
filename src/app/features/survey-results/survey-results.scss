@@ -1,0 +1,65 @@
+@use '../../../styles/variables' as *;
+
+:host {
+    display: block;
+    background: #ffffff;
+    padding: 1.8rem;
+    border-radius: 20px;
+    border: 1px solid #00000010;
+    height: fit-content;
+}
+
+h2 {
+    margin: 0 0 1.6rem 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+
+    .fontYellow {
+        color: #EE9236;
+    }
+}
+
+.result-block {
+    margin-bottom: 2.2rem;
+
+    h3 {
+        margin: 0 0 0.8rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .result-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.9rem;
+
+        .label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .bar {
+            width: 100%;
+            height: 14px;
+            background: #EE923620;
+            border-radius: 8px;
+            overflow: hidden;
+
+            .fill {
+                height: 100%;
+                background: #EE9236;
+                border-radius: 8px;
+                transition: width 0.4s ease;
+            }
+        }
+
+        .percent {
+            font-weight: 600;
+            color: #EE9236;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+    }
+}
