@@ -11,53 +11,89 @@
 
     <section class="meta">
 
+        <!-- SURVEY NAME -->
         <div class="meta-item name">
             <label>
                 <span>Survey name</span>
                 <input class="styled-input" type="text" name="surveyTitle" [(ngModel)]="surveyDraft.title"
-                    placeholder="Name your survey" />
+                    #title="ngModel" required minlength="3" placeholder="Name your survey" />
             </label>
+
             <button type="button" class="delete-btn" (click)="surveyDraft.title = ''"></button>
+
+            @if (title.invalid && (title.dirty || title.touched)) {
+
+            @if (title.hasError('required')) {
+            <p class="error">please enter a survey name</p>
+            }
+
+            @if (title.hasError('minlength')) {
+            <p class="error">The name must be at least 3 characters long</p>
+            }
+            }
         </div>
 
+        <!-- DESCRIPTION -->
         <div class="meta-item description">
             <label>
                 <span>Describing text (optional)</span>
                 <textarea class="styled-input description-input" name="surveyDescription"
-                    [(ngModel)]="surveyDraft.description" placeholder="Describe your survey"></textarea>
+                    [(ngModel)]="surveyDraft.description" #desc="ngModel" maxlength="300"
+                    placeholder="Describe your survey"></textarea>
             </label>
+
             <button type="button" class="delete-btn" (click)="surveyDraft.description = ''"></button>
+
+            @if (desc.invalid && (desc.dirty || desc.touched)) {
+            @if (desc.hasError('maxlength')) {
+            <p class="error">Max 300 characters allowed</p>
+            }
+            }
         </div>
 
+        <!-- DATE + CATEGORY -->
         <div class="meta-item date-category">
+
+            <!-- END DATE -->
             <div class="date-row">
                 <label>
                     <span>Set end date (optional)</span>
-                    <input class="styled-input" type="date" name="surveyEndDate" [(ngModel)]="surveyDraft.enddate" />
+                    <input class="styled-input" type="date" name="surveyEndDate" [(ngModel)]="surveyDraft.enddate"
+                        #enddate="ngModel" />
                 </label>
                 <button type="button" class="delete-btn" (click)="surveyDraft.enddate = ''"></button>
             </div>
 
+            <!-- CATEGORY -->
             <div class="category-row">
                 <label>
                     <div class="pulldown" [class.open]="categoryOpen">
-                        <select name="surveyCategory" (click)="categoryOpen = !categoryOpen"
-                            (blur)="categoryOpen = false" [(ngModel)]="surveyDraft.category">
+                        <select name="surveyCategory" [(ngModel)]="surveyDraft.category" #category="ngModel" required
+                            (click)="categoryOpen = !categoryOpen" (blur)="categoryOpen = false">
+
                             <option value="" disabled>Select category</option>
+
                             @for (c of categories(); track c.id) {
                             <option [value]="c.id">{{ c.label }}</option>
                             }
                         </select>
                     </div>
+
+                    @if (category.invalid && (category.dirty || category.touched)) {
+                    <p class="error">please select a Category</p>
+                    }
                 </label>
             </div>
+
         </div>
 
     </section>
 
+    <!-- QUESTIONS -->
     <section class="questions-grid">
 
         @for (q of surveyDraft.questions; let i = $index; track q.id) {
+
         <div class="question-block">
 
             <div class="question-header">
@@ -65,9 +101,22 @@
                 <button type="button" class="delete-btn" (click)="removeQuestion(i)"></button>
             </div>
 
+            <!-- QUESTION TEXT -->
             <input type="text" class="styled-input" placeholder="Question text" [id]="'question-' + q.id"
-                [name]="'question-' + q.id" [(ngModel)]="q.text" />
+                [name]="'question-' + q.id" [(ngModel)]="q.text" #questionCtrl="ngModel" required minlength="3" />
 
+            @if (questionCtrl.invalid && (questionCtrl.dirty || questionCtrl.touched)) {
+
+            @if (questionCtrl.hasError('required')) {
+            <p class="error">please enter a question</p>
+            }
+
+            @if (questionCtrl.hasError('minlength')) {
+            <p class="error">The question must be at least 3 characters long</p>
+            }
+            }
+
+            <!-- ANSWERS -->
             <div class="answers">
 
                 <div class="answers-header">
@@ -80,15 +129,21 @@
                 </div>
 
                 @for (a of q.answers; let j = $index; track j) {
-                <div class="answer-row">
-                    <span class="label">{{ toLetter(j) }}.</span>
 
-                    <input type="text" class="styled-input" placeholder="Answer" [id]="'answer-' + q.id + '-' + j"
-                        [name]="'answer-' + q.id + '-' + j" [(ngModel)]="surveyDraft.questions[i].answers[j]" />
-
-                    <button type="button" class="delete-btn" (click)="removeAnswer(i, j)">
-                    </button>
-                </div>
+                    <div class="answer-row">
+                        <span class="label">{{ toLetter(j) }}.</span>
+                    
+                        <input type="text" class="styled-input" placeholder="Answer" [id]="'answer-' + q.id + '-' + j"
+                            [name]="'answer-' + q.id + '-' + j" [(ngModel)]="surveyDraft.questions[i].answers[j]" #answerCtrl="ngModel"
+                            required minlength="1" />
+                    
+                        <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
+                    </div>
+                    
+                    @if (answerCtrl.invalid && (answerCtrl.dirty || answerCtrl.touched)) {
+                    <p class="error answer-error">please enter an answer</p>
+                    }
+                    
                 }
 
                 <button type="button" class="link-button" (click)="addAnswer(i)">
@@ -96,6 +151,7 @@
                 </button>
 
             </div>
+            
         </div>
         }
 
@@ -105,12 +161,14 @@
 
     </section>
 
+    <!-- FOOTER -->
     <footer class="actions">
-        <button type="button" class="button btn-primary" [disabled]="!isValid()" (click)="publish()">
+        <button type="button" class="button btn-primary submit-btn" [disabled]="!isValid()" (click)="publish()">
             Publish
         </button>
     </footer>
 
+    <!-- SUCCESS -->
     @if (successDialog) {
     <div class="dialog success">
         <h2>Survey has been created successfully! You will be forwarded to the main page soon.</h2>
@@ -120,6 +178,7 @@
     </div>
     }
 
+    <!-- ERROR -->
     @if (errorDialog) {
     <div class="dialog error">
         <h2>Error creating survey</h2>
