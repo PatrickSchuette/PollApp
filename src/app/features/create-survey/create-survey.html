@@ -58,11 +58,18 @@
             <div class="date-row">
                 <label>
                     <span>Set end date (optional)</span>
+            
                     <input class="styled-input" type="date" name="surveyEndDate" [(ngModel)]="surveyDraft.enddate"
-                        #enddate="ngModel" />
+                        #enddate="ngModel" (ngModelChange)="validateEndDate()" />
                 </label>
+            
                 <button type="button" class="delete-btn" (click)="surveyDraft.enddate = ''"></button>
+            
+                @if (endDateError) {
+                <p class="error">Date must be in the future</p>
+                }
             </div>
+              
 
             <!-- CATEGORY -->
             <div class="category-row">
@@ -130,20 +137,20 @@
 
                 @for (a of q.answers; let j = $index; track j) {
 
-                    <div class="answer-row">
-                        <span class="label">{{ toLetter(j) }}.</span>
-                    
-                        <input type="text" class="styled-input" placeholder="Answer" [id]="'answer-' + q.id + '-' + j"
-                            [name]="'answer-' + q.id + '-' + j" [(ngModel)]="surveyDraft.questions[i].answers[j]" #answerCtrl="ngModel"
-                            required minlength="1" />
-                    
-                        <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
-                    </div>
-                    
-                    @if (answerCtrl.invalid && (answerCtrl.dirty || answerCtrl.touched)) {
-                    <p class="error answer-error">please enter an answer</p>
-                    }
-                    
+                <div class="answer-row">
+                    <span class="label">{{ toLetter(j) }}.</span>
+
+                    <input type="text" class="styled-input" placeholder="Answer" [id]="'answer-' + q.id + '-' + j"
+                        [name]="'answer-' + q.id + '-' + j" [(ngModel)]="surveyDraft.questions[i].answers[j]"
+                        #answerCtrl="ngModel" required minlength="1" />
+
+                    <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
+                </div>
+
+                @if (answerCtrl.invalid && (answerCtrl.dirty || answerCtrl.touched)) {
+                <p class="error answer-error">please enter an answer</p>
+                }
+
                 }
 
                 <button type="button" class="link-button" (click)="addAnswer(i)">
@@ -151,7 +158,7 @@
                 </button>
 
             </div>
-            
+
         </div>
         }
 

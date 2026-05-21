@@ -31,6 +31,7 @@ export class CreateSurveyComponent {
   errorDialog = false;
   errorMessage = '';
   createdSurveyId = '';
+  endDateError = false;
 
   public readonly surveyService = inject(SurveyService);
   public readonly categoryService = inject(CategoryService);
@@ -145,4 +146,27 @@ export class CreateSurveyComponent {
   goHome(): void {
     this.router.navigate(['/']);
   }
+
+  /**
+   * Validates whether the selected end date is in the future.
+   * 
+   * Sets `endDateError` to `true` if the chosen date is before today.
+   * Optional fields without a value are treated as valid.
+   *
+   * @returns {void}
+   */
+  validateEndDate(): void {
+    if (!this.surveyDraft.enddate) {
+      this.endDateError = false;
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selected = new Date(this.surveyDraft.enddate);
+
+    this.endDateError = selected < today;
+  }
+  
 }
