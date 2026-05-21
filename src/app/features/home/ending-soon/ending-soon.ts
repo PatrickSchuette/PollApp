@@ -2,6 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { Survey } from '../../../shared/interfaces/survey';
 import { Router } from '@angular/router';
 import { getDaysLeft } from '../../../shared/services/date.utils';
+import { CategoryService } from '../../../shared/services/category';
 
 @Component({
   selector: 'app-ending-soon',
@@ -12,11 +13,12 @@ import { getDaysLeft } from '../../../shared/services/date.utils';
 })
 export class EndingSoonComponent {
   @Input() surveys: Survey[] = [];
-  @Input() maxDays = 30; // kommt jetzt von außen
+  @Input() maxDays = 30; 
 
   getDaysLeft = getDaysLeft;
 
   private router = inject(Router);
+  categoryService = inject(CategoryService);
 
   openSurvey(id: string): void {
     this.router.navigate(['/survey', id]);
@@ -36,4 +38,5 @@ export class EndingSoonComponent {
     const percent = (1 - diff / this.maxDays) * 100;
     return Math.min(100, Math.max(0, Math.round(percent)));
   }
+
 }

@@ -5,6 +5,7 @@ import { LetterPipe } from '../../shared/pipes/letter.pipe';
 import { SurveyFull } from '../../shared/interfaces/survey-full';
 import { getDaysLeft } from '../../shared/services/date.utils';
 import { SurveyResultsComponent } from '../survey-results/survey-results';
+import { CategoryService } from '../../shared/services/category';
 
 /**
  * Displays a full survey including questions and answer options.
@@ -18,6 +19,8 @@ import { SurveyResultsComponent } from '../survey-results/survey-results';
   imports: [LetterPipe, SurveyResultsComponent],
 })
 export class SurveyDetailComponent {
+
+  categoryService = inject(CategoryService);
 
   /** Holds the fully loaded survey including nested questions */
   survey = signal<SurveyFull | null>(null);

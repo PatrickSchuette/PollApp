@@ -1,7 +1,7 @@
 <div class="ending-soon-grid">
     @for (s of surveys; track s.id) {
     <div class="ending-card" (click)="openSurvey(s.id)">
-        <div class="category">{{ s.category }}</div>
+        <div class="category">{{ categoryService.getLabelById(s.category) }}</div>
 
         <div class="title">
             {{ s.title }}

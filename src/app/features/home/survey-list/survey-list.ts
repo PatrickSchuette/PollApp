@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { Survey } from '../../../shared/interfaces/survey';
 import { Router } from '@angular/router'; 
 import { getDaysLeft } from '../../../shared/services/date.utils';
+import { CategoryService } from '../../../shared/services/category';
 
 @Component({
   selector: 'app-survey-list',
@@ -16,6 +17,7 @@ export class SurveyListComponent {
 
   constructor(private router: Router) {}
 
+  categoryService = inject(CategoryService);
   getDaysLeft = getDaysLeft;
   
   // Method to navigate to the survey details page
