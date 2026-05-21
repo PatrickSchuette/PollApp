@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { SurveyService } from '../../shared/services/survey.service';
 import { SurveyListComponent } from './survey-list/survey-list';
 import { EndingSoonComponent } from './ending-soon/ending-soon';
@@ -18,101 +18,123 @@ export class HomeComponent {
   private categoryService = inject(CategoryService);
   private router = inject(Router);
 
-  filter = 'active';
-  endingSoon = signal<any[]>([]);
-  active = signal<any[]>([]);
-  past = signal<any[]>([]);
-  categoryOpen = false;
-  filterCategory = '';
-  maxDaysLimit = 0;
-  maxDaysSlider = 0;
+  filter = signal<'active' | 'past'>('active');
+  categoryOpen = signal(false);
+  filterCategory = signal('');
+
+  // User value (null = User hat noch nichts eingestellt)
+  userSelectedDays = signal<number | null>(null);
 
   categories = this.categoryService.categories;
+  surveys = this.surveyService.surveys;
+
+  active = computed(() => this.filterSurveysByStatus(false));
+  past = computed(() => this.filterSurveysByStatus(true));
+  endingSoon = computed(() => this.getSortedEndingSoon());
+  maxDaysLimit = computed(() => this.calculateMaxDays());
+
+  // Slider-Wert: User-Wert oder automatisch maxDaysLimit
+  maxDaysSlider = computed(() => {
+    const userValue = this.userSelectedDays();
+    return userValue !== null ? userValue : this.maxDaysLimit();
+  });
+
+  filteredSurveys = computed(() => this.getFilteredMainList());
+  endingSoonFiltered = computed(() => this.getFilteredEndingSoonList());
 
   /**
-   * Loads all survey data on component initialization.
+   * Filters surveys by finished status.
    */
-  async ngOnInit() {
-    await this.loadData();
-    this.active.set(await this.surveyService.getActiveSurveys());
-    this.past.set(await this.surveyService.getPastSurveys());
+  filterSurveysByStatus(finished: boolean): any[] {
+    return this.surveys().filter(s => s.isfinished === finished);
   }
 
   /**
-   * Navigates to the survey creation page.
+   * Returns active surveys sorted by end date.
+   */
+  getSortedEndingSoon(): any[] {
+    const list = this.surveys().filter(s => !s.isfinished && s.enddate);
+    return list.sort((a, b) => {
+      return new Date(a.enddate).getTime() - new Date(b.enddate).getTime();
+    });
+  }
+
+  /**
+   * Calculates remaining days until end date.
+   */
+  getDaysDifference(enddate: string): number {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const end = new Date(enddate);
+    end.setHours(0, 0, 0, 0);
+    return Math.max(0, Math.ceil((end.getTime() - today.getTime()) / 86400000));
+  }
+
+  /**
+   * Finds the maximum remaining days among ending soon surveys.
+   */
+  calculateMaxDays(): number {
+    let max = 0;
+    for (const survey of this.endingSoon()) {
+      const diff = this.getDaysDifference(survey.enddate);
+      if (diff > max) max = diff;
+    }
+    return max;
+  }
+
+  /**
+   * Filters active/past list by category.
+   */
+  getFilteredMainList(): any[] {
+    const base = this.filter() === 'active' ? this.active() : this.past();
+    const category = this.filterCategory();
+    if (!category) return base;
+    return base.filter(s => s.category === category);
+  }
+
+  /**
+   * Filters ending soon list by slider value.
+   */
+  getFilteredEndingSoonList(): any[] {
+    const sliderVal = this.maxDaysSlider();
+    const limitVal = this.maxDaysLimit();
+
+    // Wenn User nichts eingestellt hat → maxDaysLimit verwenden
+    if (this.userSelectedDays() === null) return this.endingSoon();
+
+    // Wenn User max oder 0 einstellt → alles anzeigen
+    if (sliderVal === limitVal || sliderVal === 0) return this.endingSoon();
+
+    return this.endingSoon().filter(s => {
+      return this.getDaysDifference(s.enddate) <= sliderVal;
+    });
+  }
+
+  /**
+   * Navigates to create page.
    */
   goToCreate(): void {
     this.router.navigate(['/create']);
   }
 
   /**
-   * Sets the active survey filter (active or past).
+   * Sets active/past filter.
    */
-  setFilter(value: 'active' | 'past') {
-    this.filter = value;
+  setFilter(value: 'active' | 'past'): void {
+    this.filter.set(value);
   }
 
   /**
-   * Returns surveys filtered by selected category.
+   * Handles slider input.
    */
-  getFilteredSurveys() {
-    const list = this.filter === 'active' ? this.active() : this.past();
-    if (!this.filterCategory) return list;
-    return list.filter(s => s.category === this.filterCategory);
-  }
+  onSliderChange(event: any): void {
+    const value = Number(event.target.value);
+    const max = this.maxDaysLimit();
 
-  /**
-   * Returns surveys filtered by remaining days.
-   */
-  getEndingSoonFiltered() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return this.endingSoon().filter(s => {
-      const end = new Date(s.enddate);
-      end.setHours(0, 0, 0, 0);
-
-      const diff = Math.max(
-        0,
-        Math.ceil((end.getTime() - today.getTime()) / 86400000)
-      );
-
-      if (this.maxDaysSlider === this.maxDaysLimit) return true;
-      return diff <= this.maxDaysSlider;
-    });
-  }
-
-  /**
-   * Loads ending-soon surveys and initializes slider values.
-   */
-  async loadData() {
-    const surveys = await this.surveyService.getEndingSoon();
-    this.endingSoon.set(surveys);
-    this.maxDaysLimit = this.getMaxDaysFromSurveys(surveys);
-    this.maxDaysSlider = this.maxDaysLimit;
-  }
-
-  /**
-   * Calculates the highest remaining day count among all surveys.
-   */
-  getMaxDaysFromSurveys(surveys: any[]): number {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let max = 0;
-
-    for (const s of surveys) {
-      const end = new Date(s.enddate);
-      end.setHours(0, 0, 0, 0);
-
-      const diff = Math.max(
-        0,
-        Math.ceil((end.getTime() - today.getTime()) / 86400000)
-      );
-
-      if (diff > max) max = diff;
+    if (value === 0) {
+      this.userSelectedDays.set(max);
+    } else {
+      this.userSelectedDays.set(value);
     }
-
-    return max;
   }
 }

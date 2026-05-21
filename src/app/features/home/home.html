@@ -24,27 +24,28 @@
     <h2>Your Surveys</h2>
     <p class="endingSoon">Ending soon surveys</p>
 
-    <app-ending-soon [surveys]="getEndingSoonFiltered()" [maxDays]="maxDaysSlider">
+    <app-ending-soon [surveys]="endingSoonFiltered()" [maxDays]="maxDaysSlider()">
     </app-ending-soon>
 
     <div class="slider-container">
-        <label class="endingSoon">Max Days: {{ maxDaysSlider }}</label>
-        <input type="range" min="1" [max]="maxDaysLimit" [(ngModel)]="maxDaysSlider" />
+        <label class="endingSoon">Max Days: {{ maxDaysSlider() }}</label>
+        <input type="range" min="1" [max]="maxDaysLimit()" [value]="maxDaysSlider()" (input)="onSliderChange($event)" />
+
     </div>
 
     <div class="filter-row">
         <div class="filterBtn-content">
-            <button class="btn-filter" [class.active]="filter === 'active'" (click)="setFilter('active')">
+            <button class="btn-filter" [class.active]="filter() === 'active'" (click)="setFilter('active')">
                 Active survey
             </button>
 
-            <button class="btn-filter" [class.active]="filter === 'past'" (click)="setFilter('past')">
+            <button class="btn-filter" [class.active]="filter() === 'past'" (click)="setFilter('past')">
                 Past survey
             </button>
         </div>
 
-        <div class="pulldown" [class.open]="categoryOpen">
-            <select name="surveyCategory" (click)="categoryOpen = !categoryOpen" (blur)="categoryOpen = false"
+        <div class="pulldown" [class.open]="categoryOpen()">
+            <select name="surveyCategory" (click)="categoryOpen.set(!categoryOpen())" (blur)="categoryOpen.set(false)"
                 [(ngModel)]="filterCategory">
                 <option value="" disabled hidden>Select category</option>
 
@@ -57,9 +58,8 @@
     </div>
 
     <div class="survey-list-container">
-        <app-survey-list [surveys]="getFilteredSurveys()">
+        <app-survey-list [surveys]="filteredSurveys()">
         </app-survey-list>
-
     </div>
 
 </section>

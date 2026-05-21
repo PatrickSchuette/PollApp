@@ -1,5 +1,5 @@
 <div class="ending-soon-grid">
-    @for (s of surveys; track s.id) {
+    @for (s of surveysWithProgress(); track s.id) {
     <div class="ending-card" (click)="openSurvey(s.id)">
         <div class="category">{{ categoryService.getLabelById(s.category) }}</div>
 
@@ -12,9 +12,8 @@
         </div>
 
         <div class="progress-bar">
-            <div class="fill" [style.width]="getProgressPercent(s.enddate) + '%'"></div>
+            <div class="fill" [style.width.%]="s.progressPercent"></div>
         </div>
     </div>
     }
 </div>
-  

@@ -51,12 +51,16 @@ export class SurveyDetailComponent {
     if (!id) return;
 
     const data = await this.surveyService.getSurveyWithQuestions(id);
-    if (!data) return; // <-- WICHTIG!
+    if (!data) return; 
 
     this.survey.set(data);
 
     const votes = await this.surveyService.getVotes(id);
     this.calculateResults(votes);
+    this.surveyService.subscribeToSurveyVotes(id, votes => {
+      this.calculateResults(votes);
+    });
+    
 
     const today = new Date().toISOString().split('T')[0];
     this.isClosed.set(
@@ -65,23 +69,34 @@ export class SurveyDetailComponent {
   }
   
   /**
-   * Toggles a selected answer for a question.
+   * Selects or unselects an answer for a question.
+   * Works for single choice (radio) and multiple choice (checkbox).
    *
-   * @param qIndex - Index of the question.
-   * @param aIndex - Index of the answer option.
-   * @param allowMultiple - Whether multiple answers are allowed.
+   * @param qIndex Index of the question.
+   * @param aIndex Index of the answer option.
+   * @param allowMultiple True if multiple answers are allowed.
    */
   toggleAnswer(qIndex: number, aIndex: number, allowMultiple: boolean): void {
-    const current = this.answers()[qIndex] ?? [];
-    const updated = allowMultiple
-      ? current.includes(aIndex)
-        ? current.filter(i => i !== aIndex)
-        : [...current, aIndex]
-      : [aIndex];
-
-    this.answers.update(a => ({ ...a, [qIndex]: updated }));
+    const all = this.answers();
+    const current = all[qIndex] || [];
+    let updated: number[] = [];
+    if (allowMultiple) {
+      let exists = false;
+      for (let i = 0; i < current.length; i++) {
+        if (current[i] === aIndex) exists = true;
+        else updated.push(current[i]);
+      }
+      if (!exists) updated.push(aIndex);
+    } else {
+      updated = [aIndex];
+    }
+    const newState: any = {};
+    for (const key in all) newState[key] = all[key];
+    newState[qIndex] = updated;
+    this.answers.set(newState);
   }
-
+  
+  
   /**
    * Sends all selected answers as individual votes.
    */
