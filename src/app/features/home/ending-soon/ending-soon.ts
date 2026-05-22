@@ -12,33 +12,59 @@ import { CategoryService } from '../../../shared/services/category';
   imports: [],
 })
 export class EndingSoonComponent {
+  /**
+   * Angular Router instance used for navigation.
+   */
   private router = inject(Router);
+
+  /**
+   * Provides category metadata such as labels and colors.
+   */
   categoryService = inject(CategoryService);
 
+  /**
+   * List of surveys provided by the parent component.
+   */
   surveys = input<Survey[]>([]);
+
+  /**
+   * Maximum number of days used to calculate progress percentage.
+   */
   maxDays = input<number>(30);
+
+  /**
+   * Utility function to calculate remaining days until survey end.
+   */
   getDaysLeft = getDaysLeft;
 
+  /**
+   * Computed list of surveys enriched with progressPercent values.
+   * Progress indicates how much of the allowed time has passed.
+   */
   surveysWithProgress = computed(() => this.buildSurveysWithProgress());
 
   /**
    * Calculates the remaining days between today and a target end date.
-   * @param {string} enddate - The end date string.
-   * @returns {number} The calculated remaining days.
+   *
+   * @param enddate - The end date string in ISO format.
+   * @returns Number of remaining days (minimum 0).
    */
   calculateDiffDays(enddate: string): number {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
     const end = new Date(enddate);
     end.setHours(0, 0, 0, 0);
+
     return Math.max(0, Math.floor((end.getTime() - today.getTime()) / 86400000));
   }
 
   /**
    * Computes the percentage value based on remaining and maximum days.
-   * @param {number} diff - The remaining days left.
-   * @param {number} max - The total maximum days limit.
-   * @returns {number} The progress percent between 0 and 100.
+   *
+   * @param diff - Remaining days.
+   * @param max - Maximum allowed days.
+   * @returns Progress percentage between 0 and 100.
    */
   calculatePercent(diff: number, max: number): number {
     if (max <= 0) return 0;
@@ -50,7 +76,7 @@ export class EndingSoonComponent {
    * Creates a new list of surveys and adds a progressPercent value.
    * Progress shows how many percent of the allowed time has passed.
    *
-   * @returns A new list of surveys with progressPercent included.
+   * @returns Array of surveys enriched with progressPercent.
    */
   buildSurveysWithProgress(): any[] {
     const maxDays = this.maxDays();
@@ -75,10 +101,11 @@ export class EndingSoonComponent {
       };
     });
   }
-  
+
   /**
-   * Navigates to a specific survey view page.
-   * @param {string} id - The identifier of the survey.
+   * Navigates to the detail page of a specific survey.
+   *
+   * @param id - Unique identifier of the survey.
    */
   openSurvey(id: string): void {
     this.router.navigate(['/survey', id]);

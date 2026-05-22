@@ -124,14 +124,24 @@ export class CreateSurveyComponent {
    * Publishes the survey after validation.
    */
   async publish(): Promise<void> {
-    let timer = this.countdown * 1000;
     if (!this.isValid()) return;
+
     if (!this.isDraftSafe()) {
       this.errorMessage = 'Invalid input detected. HTML or JavaScript is not allowed.';
       this.errorDialog = true;
       setTimeout(() => this.cdr.detectChanges());
       return;
     }
+
+    const timer = this.countdown * 1000;
+    await this.executePublish(timer);
+  }
+
+  /**
+   * Executes the publish request and handles success or error states.
+   * @param timer Redirect delay in milliseconds.
+   */
+  private async executePublish(timer: number): Promise<void> {
     try {
       const survey = await this.surveyService.createSurvey(this.surveyDraft);
       this.createdSurveyId = survey.id;
@@ -144,8 +154,8 @@ export class CreateSurveyComponent {
       this.errorDialog = true;
       setTimeout(() => this.cdr.detectChanges());
     }
-  } 
-
+  }
+  
   /**
    * Navigates to home page.
    */

@@ -8,8 +8,9 @@ import { SurveyResultsComponent } from '../survey-results/survey-results';
 import { CategoryService } from '../../shared/services/category';
 
 /**
- * Displays a full survey including questions and answer options.
- * Handles user selections and triggers completion logic.
+ * Displays a full survey including questions, answer options,
+ * live vote updates and result visualization.
+ * Handles user selections, voting and navigation.
  */
 @Component({
   selector: 'app-survey-detail',
@@ -20,23 +21,50 @@ import { CategoryService } from '../../shared/services/category';
 })
 export class SurveyDetailComponent {
 
+  /**
+   * Provides category metadata such as labels and colors.
+   */
   categoryService = inject(CategoryService);
 
-  /** Holds the fully loaded survey including nested questions */
+  /**
+   * Holds the fully loaded survey including all nested questions and options.
+   */
   survey = signal<SurveyFull | null>(null);
 
-  /** Stores selected answers per question index */
+  /**
+   * Stores selected answers per question index.
+   * Structure: { [questionIndex]: number[] }
+   */
   answers = signal<{ [questionIndex: number]: number[] }>({});
 
-  /** Controls the temporary success dialog */
+  /**
+   * Controls visibility of the temporary success dialog after voting.
+   */
   showSuccess = signal(false);
 
-  /** Holds calculated results for display */
+  /**
+   * Holds calculated vote results for each question.
+   */
   results = signal<any[]>([]);
+
+  /**
+   * Indicates whether the survey already has votes.
+   */
   hasVotes = signal(false);
+
+  /**
+   * Indicates whether the survey is closed (end date reached or manually finished).
+   */
   isClosed = signal(false);
+
+  /**
+   * Controls visibility of the results section.
+   */
   showResults = false;
 
+  /**
+   * Utility function to calculate remaining days until survey end.
+   */
   getDaysLeft = getDaysLeft;
 
   private route = inject(ActivatedRoute);
@@ -44,42 +72,39 @@ export class SurveyDetailComponent {
   private router = inject(Router);
 
   /**
-   * Loads survey and its live results.
+   * Loads the survey, its questions and live vote data.
+   * Subscribes to real-time vote updates.
    */
   async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
-
     const data = await this.surveyService.getSurveyWithQuestions(id);
-    if (!data) return; 
-
+    if (!data) return;
     this.survey.set(data);
-
     const votes = await this.surveyService.getVotes(id);
     this.calculateResults(votes);
+
     this.surveyService.subscribeToSurveyVotes(id, votes => {
       this.calculateResults(votes);
     });
-    
 
     const today = new Date().toISOString().split('T')[0];
-    this.isClosed.set(
-      data.isfinished || data.enddate < today
-    );
+    this.isClosed.set(data.isfinished || data.enddate < today);
   }
-  
+
   /**
    * Selects or unselects an answer for a question.
-   * Works for single choice (radio) and multiple choice (checkbox).
+   * Supports both single-choice and multiple-choice questions.
    *
    * @param qIndex Index of the question.
    * @param aIndex Index of the answer option.
-   * @param allowMultiple True if multiple answers are allowed.
+   * @param allowMultiple Whether multiple answers are allowed.
    */
   toggleAnswer(qIndex: number, aIndex: number, allowMultiple: boolean): void {
     const all = this.answers();
     const current = all[qIndex] || [];
     let updated: number[] = [];
+
     if (allowMultiple) {
       let exists = false;
       for (let i = 0; i < current.length; i++) {
@@ -90,21 +115,22 @@ export class SurveyDetailComponent {
     } else {
       updated = [aIndex];
     }
+
     const newState: any = {};
     for (const key in all) newState[key] = all[key];
     newState[qIndex] = updated;
+
     this.answers.set(newState);
   }
-  
-  
+
   /**
-   * Sends all selected answers as individual votes.
+   * Submits all selected answers as individual votes.
+   * Shows a success dialog and redirects to the home page.
    */
   async completeSurvey(): Promise<void> {
     const survey: SurveyFull | null = this.survey();
     if (!survey) return;
-
-    const answers: { [key: number]: number[] } = this.answers();
+    const answers = this.answers();
 
     for (const qIndex in answers) {
       for (const aIndex of answers[qIndex]) {
@@ -122,10 +148,9 @@ export class SurveyDetailComponent {
       this.router.navigate(['/']);
     }, 1500);
   }
-  
 
   /**
-   * Navigates to the create survey page.
+   * Navigates to the survey creation page.
    */
   goToCreateSurvey(): void {
     this.router.navigate(['/create']);
@@ -139,33 +164,46 @@ export class SurveyDetailComponent {
   }
 
   /**
-   * Groups votes by question and option and calculates percentages.
+   * Aggregates vote data per question and calculates percentages.
    */
   calculateResults(votes: any[]): void {
-    const s = this.survey();
-    if (!s) return;
+    const survey = this.survey();
+    if (!survey) return;
 
-    const result = s.questions.map((q, qi) => {
+    const results = survey.questions.map((q, qi) => {
       const questionVotes = votes.filter(v => v.question_index === qi);
-      const total = questionVotes.reduce((sum, v) => sum + (v.vote_count ?? 0), 0);
-
-      const options = q.options.map((o, oi) => {
-        const entry = questionVotes.find(v => v.answer_text === o.text);
-        const count = entry?.vote_count ?? 0;
-        const percent = total ? Math.round((count / total) * 100) : 0;
-        return { label: oi, percent };
-      });
-
+      const total = this.sumVotes(questionVotes);
+      const options = this.buildOptionResults(q.options, questionVotes, total);
       return { question: q.title, options };
     });
 
-    this.results.set(result);
+    this.results.set(results);
     this.hasVotes.set(votes.length > 0);
-
+  }
+  
+  /**
+ * Sums all vote counts for a question.
+ */
+  private sumVotes(votes: any[]): number {
+    return votes.reduce((sum, v) => sum + (v.vote_count ?? 0), 0);
   }
 
-  toggleResults() {
+  /**
+   * Builds option results including percentage values.
+   */
+  private buildOptionResults(options: any[], votes: any[], total: number): any[] {
+    return options.map((o, oi) => {
+      const entry = votes.find(v => v.answer_text === o.text);
+      const count = entry?.vote_count ?? 0;
+      const percent = total ? Math.round((count / total) * 100) : 0;
+      return { label: oi, percent };
+    });
+  }
+  
+  /**
+   * Toggles visibility of the results section.
+   */
+  toggleResults(): void {
     this.showResults = !this.showResults;
   }
-
 }

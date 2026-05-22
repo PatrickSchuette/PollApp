@@ -22,7 +22,6 @@ export class HomeComponent {
   categoryOpen = signal(false);
   filterCategory = signal('');
 
-  // User value (null = User hat noch nichts eingestellt)
   userSelectedDays = signal<number | null>(null);
 
   categories = this.categoryService.categories;
@@ -33,7 +32,6 @@ export class HomeComponent {
   endingSoon = computed(() => this.getSortedEndingSoon());
   maxDaysLimit = computed(() => this.calculateMaxDays());
 
-  // Slider-Wert: User-Wert oder automatisch maxDaysLimit
   maxDaysSlider = computed(() => {
     const userValue = this.userSelectedDays();
     return userValue !== null ? userValue : this.maxDaysLimit();
@@ -99,10 +97,8 @@ export class HomeComponent {
     const sliderVal = this.maxDaysSlider();
     const limitVal = this.maxDaysLimit();
 
-    // Wenn User nichts eingestellt hat → maxDaysLimit verwenden
     if (this.userSelectedDays() === null) return this.endingSoon();
 
-    // Wenn User max oder 0 einstellt → alles anzeigen
     if (sliderVal === limitVal || sliderVal === 0) return this.endingSoon();
 
     return this.endingSoon().filter(s => {
