@@ -133,17 +133,17 @@
 }
 
 .btn-create::after {
-  background-image: url("#{$baseURL}/assets/img/add_circle.svg");
+  background-image: url("../../public/assets/img/add_circle.svg");
 }
 
 .btn-create-dark::after {
-  background-image: url("#{$baseURL}/assets/img/add_circle_dark.svg");
+  background-image: url("../../public/assets/img/add_circle_dark.svg");
 }
 
 .btn-check::after {
-  background-image: url("#{$baseURL}/assets/img/check.svg");
+  background-image: url("../../public/assets/img/check.svg");
 }
 
 .btn-close::after {
-  background-image: url("#{$baseURL}/assets/img/close.svg");
+  background-image: url("../../public/assets/img/close.svg");
 }

@@ -162,7 +162,7 @@ h2 {
 }
 
 .hero-image {
-  background-image: url("#{$baseURL}/assets/img/tablet.svg");
+  background-image: url("../../../../public/assets/img/tablet.svg");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -172,7 +172,7 @@ h2 {
   margin: 0 auto;
 
   &:hover {
-    background-image: url("#{$baseURL}/assets/img/tablet-hover.svg");
+    background-image: url("../../../../public/assets/img/tablet-hover.svg");
   }
 
   @media (min-width: $bp-md) {
