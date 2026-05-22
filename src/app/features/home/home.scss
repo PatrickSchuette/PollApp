@@ -1,6 +1,7 @@
 @use "../../../styles/variables" as *;
 @use "../../../styles/components" as *;
 @use "../../../styles/pulldown" as *;
+@use "../../../styles/font" as *;
 
 :host {
   display: block;
@@ -17,6 +18,7 @@
   max-width: var(--maxWidth);
   margin: 0 auto;
   overflow: hidden;
+  font-family: "Mulish", sans-serif;
 
   @media (min-width: $bp-md) {
     padding: 3rem 4rem;
@@ -137,6 +139,7 @@ h2 {
   line-height: 1.6;
   opacity: 0.8;
   color: $color-text-white;
+  font-family: Mulish;
   text-align: center;
 
   @media (min-width: $bp-md) {

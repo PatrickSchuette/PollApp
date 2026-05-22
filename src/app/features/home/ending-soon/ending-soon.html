@@ -8,7 +8,14 @@
         </div>
 
         <div class="ends-banner">
-            Ends in {{ getDaysLeft(s.enddate) }} Days
+
+            @let days = getDaysLeft(s.enddate);
+            
+            @if (days === null) {
+            No end date
+            } @else if (days > 0) {
+            Ends in {{ days }} Days
+            } @else if (days < 0) { Ended {{ -days }} Days ago } @else { Ends today }
         </div>
 
         <div class="progress-bar">

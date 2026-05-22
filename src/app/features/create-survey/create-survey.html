@@ -5,7 +5,17 @@
 
         <div class="header-row">
             <h1>Create new survey</h1>
-            <button class="cancel" (click)="goHome()">Cancel</button>
+            <div class="onlyDesktop">
+                <button class="button btn-primary  btn-symbol btn-close" (click)="goHome()"
+                    style="color: white !important;">Cancel</button>
+            </div>
+
+            <div class="onlyMobile">
+                <button class="button btn-primary btn-close-mobile" (click)="goHome()">
+                    <img src="./assets/img/close.svg" alt="Cancel">
+                </button>
+            </div>
+
         </div>
     </header>
 
@@ -21,7 +31,7 @@
 
             <button type="button" class="delete-btn" (click)="surveyDraft.title = ''"></button>
 
-            @if (title.invalid && (title.dirty || title.touched)) {
+            @if (title.invalid && title.touched) {
 
             @if (title.hasError('required')) {
             <p class="error">please enter a survey name</p>
@@ -44,7 +54,7 @@
 
             <button type="button" class="delete-btn" (click)="surveyDraft.description = ''"></button>
 
-            @if (desc.invalid && (desc.dirty || desc.touched)) {
+            @if (desc.invalid && desc.touched) {
             @if (desc.hasError('maxlength')) {
             <p class="error">Max 300 characters allowed</p>
             }
@@ -58,18 +68,18 @@
             <div class="date-row">
                 <label>
                     <span>Set end date (optional)</span>
-            
+
                     <input class="styled-input" type="date" name="surveyEndDate" [(ngModel)]="surveyDraft.enddate"
                         #enddate="ngModel" (ngModelChange)="validateEndDate()" />
                 </label>
-            
+
                 <button type="button" class="delete-btn" (click)="surveyDraft.enddate = ''"></button>
-            
+
                 @if (endDateError) {
                 <p class="error">Date must be in the future</p>
                 }
             </div>
-              
+
 
             <!-- CATEGORY -->
             <div class="category-row">
@@ -86,7 +96,7 @@
                         </select>
                     </div>
 
-                    @if (category.invalid && (category.dirty || category.touched)) {
+                    @if (category.invalid && category.touched) {
                     <p class="error">please select a Category</p>
                     }
                 </label>
@@ -112,7 +122,7 @@
             <input type="text" class="styled-input" placeholder="Question text" [id]="'question-' + q.id"
                 [name]="'question-' + q.id" [(ngModel)]="q.text" #questionCtrl="ngModel" required minlength="3" />
 
-            @if (questionCtrl.invalid && (questionCtrl.dirty || questionCtrl.touched)) {
+            @if (questionCtrl.invalid && questionCtrl.touched) {
 
             @if (questionCtrl.hasError('required')) {
             <p class="error">please enter a question</p>
@@ -147,7 +157,7 @@
                     <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
                 </div>
 
-                @if (answerCtrl.invalid && (answerCtrl.dirty || answerCtrl.touched)) {
+                @if (answerCtrl.invalid && answerCtrl.touched) {
                 <p class="error answer-error">please enter an answer</p>
                 }
 
@@ -162,31 +172,41 @@
         </div>
         }
 
-        <button class="button btn-add-question" (click)="addQuestion()">
-            Add next question +
-        </button>
+
+        <button class="button btn-primary  btn-symbol btn-create btn-add-question-position" (click)="addQuestion()"
+            style="color: white !important;">Add next question</button>
+
 
     </section>
 
     <!-- FOOTER -->
     <footer class="actions">
-        <button type="button" class="button btn-primary submit-btn" [disabled]="!isValid()" (click)="publish()">
+        <button type="button" class="button btn-primary submit-btn  btn-symbol btn-check" [disabled]="!isValid()"
+            (click)="publish()">
             Publish
         </button>
     </footer>
 
     <!-- SUCCESS -->
     @if (successDialog) {
+    <div class="dialog-overlay"></div>
     <div class="dialog success">
-        <h2>Survey has been created successfully! You will be forwarded to the main page soon.</h2>
-        <button class="button btn-primary" (click)="router.navigate(['/survey', createdSurveyId])">
+        <h2>
+            Survey has been created successfully!<br> <br>
+            Redirecting in {{ countdown }} seconds...
+        </h2>
+
+        <button class="button btn-primary" (click)="goToSurvey()">
             View Survey
         </button>
+
     </div>
     }
 
+
     <!-- ERROR -->
     @if (errorDialog) {
+    <div class="dialog-overlay"></div>
     <div class="dialog error">
         <h2>Error creating survey</h2>
         <p>{{ errorMessage }}</p>

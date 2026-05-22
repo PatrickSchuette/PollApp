@@ -32,11 +32,16 @@ export class CreateSurveyComponent {
   errorMessage = '';
   createdSurveyId = '';
   endDateError = false;
+  countdown = 5;
+  redirectTimeout: any = null;
+  countdownInterval: any = null;
 
-  public readonly surveyService = inject(SurveyService);
-  public readonly categoryService = inject(CategoryService);
-  public readonly router = inject(Router);
-  public readonly cdr = inject(ChangeDetectorRef);
+
+
+  readonly surveyService = inject(SurveyService);
+  readonly categoryService = inject(CategoryService);
+  readonly router = inject(Router);
+  readonly cdr = inject(ChangeDetectorRef);
 
   categories = this.categoryService.categories;
   categoryOpen = false;
@@ -114,31 +119,32 @@ export class CreateSurveyComponent {
 
     return true;
   }
-  
 
   /**
    * Publishes the survey after validation.
    */
   async publish(): Promise<void> {
-    if (!this.isValid()) { return; }
+    let timer = this.countdown * 1000;
+    if (!this.isValid()) return;
     if (!this.isDraftSafe()) {
       this.errorMessage = 'Invalid input detected. HTML or JavaScript is not allowed.';
       this.errorDialog = true;
-      this.cdr.detectChanges();
+      setTimeout(() => this.cdr.detectChanges());
       return;
     }
     try {
       const survey = await this.surveyService.createSurvey(this.surveyDraft);
       this.createdSurveyId = survey.id;
       this.successDialog = true;
-      this.cdr.detectChanges();
-      setTimeout(() => this.router.navigate(['/']), 2000);
+      this.startCountdown();
+      setTimeout(() => this.cdr.detectChanges());
+      this.redirectTimeout = setTimeout(() => this.router.navigate(['/']), timer);
     } catch (err: any) {
       this.errorMessage = err?.message ?? 'Unknown error';
       this.errorDialog = true;
-      this.cdr.detectChanges();
+      setTimeout(() => this.cdr.detectChanges());
     }
-  }
+  } 
 
   /**
    * Navigates to home page.
@@ -167,6 +173,26 @@ export class CreateSurveyComponent {
     const selected = new Date(this.surveyDraft.enddate);
 
     this.endDateError = selected < today;
+  }
+
+  /**
+   * Starts the redirect countdown and updates the countdown value each second.
+ */
+  startCountdown(): void {
+    this.countdownInterval = setInterval(() => {
+      this.countdown--;
+      if (this.countdown === 0) clearInterval(this.countdownInterval);
+      this.cdr.detectChanges();
+    }, 1000);
+  }
+
+  /**
+   * Immediately navigates to the created survey, bypassing the countdown.
+   */
+  goToSurvey(): void {
+    clearInterval(this.countdownInterval);
+    clearTimeout(this.redirectTimeout);
+    this.router.navigate(['/survey', this.createdSurveyId]);
   }
   
 }
