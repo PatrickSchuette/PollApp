@@ -73,6 +73,9 @@ this.supabase = createClient(
 ```
 
 ### 🛢️ Database Schema
+
+<img width="1536" height="1024" alt="supabas table" src="https://github.com/user-attachments/assets/c97179ad-c080-4e90-98b8-f679ffd59ecf" />
+
 Create the following relational tables in your Supabase PostgreSQL database:
 
 ```sql
