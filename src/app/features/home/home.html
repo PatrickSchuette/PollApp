@@ -26,12 +26,13 @@
 
     <app-ending-soon [surveys]="endingSoonFiltered()" [maxDays]="maxDaysSlider()">
     </app-ending-soon>
-
+    
+<!--
     <div class="slider-container">
         <label class="endingSoon">Max Days: {{ maxDaysSlider() }}</label>
         <input type="range" min="1" [max]="maxDaysLimit()" [value]="maxDaysSlider()" (input)="onSliderChange($event)" />
-
     </div>
+-->
 
     <div class="filter-row">
         <div class="filterBtn-content">

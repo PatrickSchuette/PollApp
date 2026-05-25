@@ -38,7 +38,9 @@ export class HomeComponent {
   });
 
   filteredSurveys = computed(() => this.getFilteredMainList());
-  endingSoonFiltered = computed(() => this.getFilteredEndingSoonList());
+  //endingSoonFiltered = computed(() => this.getFilteredEndingSoonList());
+  endingSoonFiltered = computed(() => this.getTopThreeEndingSoon());
+
 
   /**
    * Filters surveys by finished status.
@@ -133,4 +135,20 @@ export class HomeComponent {
       this.userSelectedDays.set(value);
     }
   }
+
+  /**
+ * Returns the next three surveys sorted by soonest end date.
+ */
+  getTopThreeEndingSoon(): any[] {
+    const list = this.endingSoon();
+    const sorted = list.sort((a, b) => {
+      return new Date(a.enddate).getTime() - new Date(b.enddate).getTime();
+    });
+    const result: any[] = [];
+    for (let i = 0; i < sorted.length && i < 3; i++) {
+      result.push(sorted[i]);
+    }
+    return result;
+  }
+
 }
