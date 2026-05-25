@@ -5,9 +5,11 @@
 
         <div class="header-row">
             <h1>Create new survey</h1>
+
             <div class="onlyDesktop">
-                <button class="button btn-primary  btn-symbol btn-close" (click)="goHome()"
-                    style="color: white !important;">Cancel</button>
+                <button class="button btn-primary btn-symbol btn-close" (click)="goHome()">
+                    Cancel
+                </button>
             </div>
 
             <div class="onlyMobile">
@@ -15,7 +17,6 @@
                     <img src="./assets/img/close.svg" alt="Cancel">
                 </button>
             </div>
-
         </div>
     </header>
 
@@ -25,40 +26,45 @@
         <div class="meta-item name">
             <label>
                 <span>Survey name</span>
-                <input class="styled-input" type="text" name="surveyTitle" [(ngModel)]="surveyDraft.title"
-                    #title="ngModel" required minlength="3" placeholder="Name your survey" />
+            
+                <input class="styled-input" type="text" placeholder="Name your survey" [value]="surveyDraft.title"
+                    (input)="surveyDraft.title = $any($event.target).value" (blur)="touched['title'] = true" [class.invalid]="(showErrors() || touched['title']) &&
+                                                 (!surveyDraft.title.trim() ||
+                                                  (surveyDraft.title.trim().length > 0 && surveyDraft.title.trim().length < 3))" />
+            
+                @if ((showErrors() || touched['title']) && !surveyDraft.title.trim()) {
+                <p class="error">please enter a survey name</p>
+                }
+            
+                @if ((showErrors() || touched['title']) &&
+                surveyDraft.title.trim().length > 0 &&
+                surveyDraft.title.trim().length < 3) { <p class="error">minimum 3 characters required</p>
+                    }
+            
             </label>
+            
 
             <button type="button" class="delete-btn" (click)="surveyDraft.title = ''"></button>
-
-            @if (title.invalid && title.touched) {
-
-            @if (title.hasError('required')) {
-            <p class="error">please enter a survey name</p>
-            }
-
-            @if (title.hasError('minlength')) {
-            <p class="error">The name must be at least 3 characters long</p>
-            }
-            }
         </div>
 
         <!-- DESCRIPTION -->
         <div class="meta-item description">
             <label>
                 <span>Describing text (optional)</span>
-                <textarea class="styled-input description-input" name="surveyDescription"
-                    [(ngModel)]="surveyDraft.description" #desc="ngModel" maxlength="300"
-                    placeholder="Describe your survey"></textarea>
+
+                <textarea class="styled-input description-input" maxlength="300" placeholder="Describe your survey"
+                    [value]="surveyDraft.description" (input)="surveyDraft.description = $any($event.target).value"
+                    (blur)="touched['desc'] = true"
+                    [class.invalid]="(showErrors() || touched['desc']) && surveyDraft.description.length > 300">
+                </textarea>
+
+                @if ((showErrors() || touched['desc']) && surveyDraft.description.length > 300) {
+                <p class="error">Max 300 characters allowed</p>
+                }
+
             </label>
 
             <button type="button" class="delete-btn" (click)="surveyDraft.description = ''"></button>
-
-            @if (desc.invalid && desc.touched) {
-            @if (desc.hasError('maxlength')) {
-            <p class="error">Max 300 characters allowed</p>
-            }
-            }
         </div>
 
         <!-- DATE + CATEGORY -->
@@ -69,24 +75,29 @@
                 <label>
                     <span>Set end date (optional)</span>
 
-                    <input class="styled-input" type="date" name="surveyEndDate" [(ngModel)]="surveyDraft.enddate"
-                        #enddate="ngModel" (ngModelChange)="validateEndDate()" />
+                    <input class="styled-input" type="date" [value]="surveyDraft.enddate"
+                        (input)="surveyDraft.enddate = $any($event.target).value; validateEndDate()"
+                        (blur)="touched['enddate'] = true"
+                        [class.invalid]="(showErrors() || touched['enddate']) && endDateError" />
+
+                    @if ((showErrors() || touched['enddate']) && endDateError) {
+                    <p class="error">Date must be in the future</p>
+                    }
+
                 </label>
 
                 <button type="button" class="delete-btn" (click)="surveyDraft.enddate = ''"></button>
-
-                @if (endDateError) {
-                <p class="error">Date must be in the future</p>
-                }
             </div>
-
 
             <!-- CATEGORY -->
             <div class="category-row">
                 <label>
                     <div class="pulldown" [class.open]="categoryOpen">
-                        <select name="surveyCategory" [(ngModel)]="surveyDraft.category" #category="ngModel" required
-                            (click)="categoryOpen = !categoryOpen" (blur)="categoryOpen = false">
+                        <select [value]="surveyDraft.category"
+                            (change)="surveyDraft.category = $any($event.target).value"
+                            (click)="categoryOpen = !categoryOpen"
+                            (blur)="categoryOpen = false; touched['category'] = true"
+                            [class.invalid]="(showErrors() || touched['category']) && !surveyDraft.category.trim()">
 
                             <option value="" disabled>Select category</option>
 
@@ -96,7 +107,7 @@
                         </select>
                     </div>
 
-                    @if (category.invalid && category.touched) {
+                    @if ((showErrors() || touched['category']) && !surveyDraft.category.trim()) {
                     <p class="error">please select a Category</p>
                     }
                 </label>
@@ -119,70 +130,76 @@
             </div>
 
             <!-- QUESTION TEXT -->
-            <input type="text" class="styled-input" placeholder="Question text" [id]="'question-' + q.id"
-                [name]="'question-' + q.id" [(ngModel)]="q.text" #questionCtrl="ngModel" required minlength="3" />
+            <input class="styled-input" type="text" placeholder="Question text" [value]="q.text"
+                (input)="q.text = $any($event.target).value" (blur)="touched['question' + i] = true"
+                [class.invalid]="(showErrors() || touched['question' + i]) && (!q.text.trim() || q.text.trim().length < 3)" />
 
-            @if (questionCtrl.invalid && questionCtrl.touched) {
-
-            @if (questionCtrl.hasError('required')) {
-            <p class="error">please enter a question</p>
-            }
-
-            @if (questionCtrl.hasError('minlength')) {
-            <p class="error">The question must be at least 3 characters long</p>
-            }
-            }
-
-            <!-- ANSWERS -->
-            <div class="answers">
-
-                <div class="answers-header">
-                    <h3>Answers</h3>
-
-                    <label class="allow-multiple">
-                        <input type="checkbox" [name]="'allowMultiple-' + i" [(ngModel)]="q.allowMultiple" />
-                        Allow multiple answers
-                    </label>
-                </div>
-
-                @for (a of q.answers; let j = $index; track j) {
-
-                <div class="answer-row">
-                    <span class="label">{{ toLetter(j) }}.</span>
-
-                    <input type="text" class="styled-input" placeholder="Answer" [id]="'answer-' + q.id + '-' + j"
-                        [name]="'answer-' + q.id + '-' + j" [(ngModel)]="surveyDraft.questions[i].answers[j]"
-                        #answerCtrl="ngModel" required minlength="1" />
-
-                    <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
-                </div>
-
-                @if (answerCtrl.invalid && answerCtrl.touched) {
-                <p class="error answer-error">please enter an answer</p>
+                @if ((showErrors() || touched['question' + i]) && !q.text.trim()) {
+                <p class="error">please enter a question</p>
                 }
+                
+                @if ((showErrors() || touched['question' + i])
+                && q.text.trim().length > 0
+                && q.text.trim().length < 3) { <p class="error">minimum 3 characters required</p>
+                    }
+                  
 
-                }
+                @if ((showErrors() || touched['question' + i]) && q.answers.length < 2) { <p class="error">Question must
+                    have at least 2 answers</p>
+                    }
 
-                <button type="button" class="link-button" (click)="addAnswer(i)">
-                    Add answer +
-                </button>
+                    <!-- ANSWERS -->
+                    <div class="answers">
 
-            </div>
+                        <div class="answers-header">
+                            <h3>Answers</h3>
+
+                            <label class="allow-multiple">
+                                <input type="checkbox" [checked]="q.allowMultiple"
+                                    (change)="q.allowMultiple = $any($event.target).checked" />
+                                Allow multiple answers
+                            </label>
+                        </div>
+
+                        @for (a of q.answers; let j = $index; track j) {
+
+                        <div class="answer-row">
+                            <span class="label">{{ toLetter(j) }}.</span>
+
+                            <input class="styled-input" type="text" placeholder="Answer"
+                                [value]="surveyDraft.questions[i].answers[j]"
+                                (input)="surveyDraft.questions[i].answers[j] = $any($event.target).value"
+                                (blur)="touched['answer' + i + '-' + j] = true"
+                                [class.invalid]="(showErrors() || touched['answer' + i + '-' + j]) && !surveyDraft.questions[i].answers[j].trim()" />
+
+                            <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
+                        </div>
+
+                        @if ((showErrors() || touched['answer' + i + '-' + j]) &&
+                        !surveyDraft.questions[i].answers[j].trim()) {
+                        <p class="error answer-error">please enter an answer</p>
+                        }
+
+                        }
+
+                        <button type="button" class="link-button" (click)="addAnswer(i)">
+                            Add answer +
+                        </button>
+
+                    </div>
 
         </div>
         }
 
-
-        <button class="button btn-primary  btn-symbol btn-create btn-add-question-position" (click)="addQuestion()"
-            style="color: white !important;">Add next question</button>
-
+        <button class="button btn-primary btn-symbol btn-create btn-add-question-position" (click)="addQuestion()">
+            Add next question
+        </button>
 
     </section>
 
     <!-- FOOTER -->
     <footer class="actions">
-        <button type="button" class="button btn-primary submit-btn  btn-symbol btn-check" [disabled]="!isValid()"
-            (click)="publish()">
+        <button type="button" class="button btn-primary submit-btn btn-symbol btn-check" (click)="publish()">
             Publish
         </button>
     </footer>
@@ -192,17 +209,15 @@
     <div class="dialog-overlay"></div>
     <div class="dialog success">
         <h2>
-            Survey has been created successfully!<br> <br>
+            Survey has been created successfully!<br><br>
             Redirecting to home in {{ countdown }} seconds...
         </h2>
 
         <button class="button btn-primary" (click)="goToSurvey()">
             View Survey
         </button>
-
     </div>
     }
-
 
     <!-- ERROR -->
     @if (errorDialog) {

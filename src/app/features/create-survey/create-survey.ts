@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -23,7 +23,7 @@ export class CreateSurveyComponent {
     category: '',
     description: '',
     questions: [
-      { id: crypto.randomUUID(), text: '', allowMultiple: false, answers: [''] }
+      { id: crypto.randomUUID(), text: '', allowMultiple: false, answers: ['', ''] }
     ]
   };
 
@@ -35,7 +35,11 @@ export class CreateSurveyComponent {
   countdown = 5;
   redirectTimeout: any = null;
   countdownInterval: any = null;
-
+  showErrors = signal(false);
+  touched: Record<string, boolean> = {};
+  maxPossibleQuestions = 4;
+  maxPossibleAnswers = 4;
+  minRequiredAnswers = 2;
 
 
   readonly surveyService = inject(SurveyService);
@@ -47,30 +51,44 @@ export class CreateSurveyComponent {
   categoryOpen = false;
 
   /**
-   * Adds a new empty question.
+   * Adds a new question with two default answers if limit not reached.
    */
   addQuestion(): void {
+    if (this.surveyDraft.questions.length >= this.maxPossibleQuestions) {
+      this.showLimitError('Maximum number of questions reached');
+      return;
+    }
     this.surveyDraft.questions.push({
       id: crypto.randomUUID(),
       text: '',
       allowMultiple: false,
-      answers: ['']
+      answers: ['', '']
     });
-  }
+  }  
 
   /**
-   * Adds an empty answer to a question.
+   * Adds an answer if limit not reached.
    */
   addAnswer(qIndex: number): void {
-    this.surveyDraft.questions[qIndex].answers.push('');
-  }
+    const list = this.surveyDraft.questions[qIndex].answers;
+    if (list.length >= this.maxPossibleAnswers) {
+      this.showLimitError('Maximum number of answers reached');
+      return;
+    }
+    list.push('');
+  }  
 
   /**
    * Removes an answer from a question.
    */
   removeAnswer(qIndex: number, aIndex: number): void {
-    this.surveyDraft.questions[qIndex].answers.splice(aIndex, 1);
+    const list = this.surveyDraft.questions[qIndex].answers;
+
+    list.splice(aIndex, 1);
+
+    this.touched['question' + qIndex] = true;
   }
+  
 
   /**
    * Removes a question.
@@ -87,17 +105,23 @@ export class CreateSurveyComponent {
   }
 
   /**
-   * Validates required fields.
+   * Validates required fields including minimum answers.
    */
   isValid(): boolean {
     if (!this.surveyDraft.title.trim()) return false;
     if (!this.surveyDraft.category.trim()) return false;
-    return this.surveyDraft.questions.every(q =>
-      q.text.trim() &&
-      q.answers.length > 0 &&
-      q.answers.every(a => a.trim())
-    );
-  }
+
+    for (let i = 0; i < this.surveyDraft.questions.length; i++) {
+      const q = this.surveyDraft.questions[i];
+      if (!q.text.trim()) return false;
+      if (q.text.trim().length < 3) return false;
+      if (q.answers.length < this.minRequiredAnswers) return false;
+      for (let j = 0; j < q.answers.length; j++) {
+        if (!q.answers[j].trim()) return false;
+      }
+    }
+    return true;
+  }  
 
   /**
    * Checks all survey fields for unsafe HTML or JavaScript.
@@ -121,21 +145,23 @@ export class CreateSurveyComponent {
   }
 
   /**
-   * Publishes the survey after validation.
+   * Publishes the survey or marks invalid fields.
    */
   async publish(): Promise<void> {
-    if (!this.isValid()) return;
-
+    if (!this.isValid()) {
+      this.showErrors.set(true);
+      return;
+    }
     if (!this.isDraftSafe()) {
       this.errorMessage = 'Invalid input detected. HTML or JavaScript is not allowed.';
       this.errorDialog = true;
       setTimeout(() => this.cdr.detectChanges());
       return;
     }
-
     const timer = this.countdown * 1000;
     await this.executePublish(timer);
   }
+  
 
   /**
    * Executes the publish request and handles success or error states.
@@ -205,4 +231,16 @@ export class CreateSurveyComponent {
     this.router.navigate(['/survey', this.createdSurveyId]);
   }
   
+  /**
+ * Shows a temporary error dialog for limit violations.
+ */
+  showLimitError(msg: string): void {
+    this.errorMessage = msg;
+    this.errorDialog = true;
+    setTimeout(() => {
+      this.errorDialog = false;
+      this.cdr.detectChanges();
+    }, 2000);
+  }
+
 }
