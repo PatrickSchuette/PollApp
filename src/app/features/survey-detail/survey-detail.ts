@@ -67,6 +67,9 @@ export class SurveyDetailComponent {
    */
   getDaysLeft = getDaysLeft;
 
+  localVotes = signal<any[]>([]);
+  realVotes = signal<any[]>([]);
+
   private route = inject(ActivatedRoute);
   private surveyService = inject(SurveyService);
   private router = inject(Router);
@@ -82,10 +85,14 @@ export class SurveyDetailComponent {
     if (!data) return;
     this.survey.set(data);
     const votes = await this.surveyService.getVotes(id);
-    this.calculateResults(votes);
+    this.realVotes.set(votes);
+    this.calculateResults(this.combinedVotes());
+
 
     this.surveyService.subscribeToSurveyVotes(id, votes => {
-      this.calculateResults(votes);
+      this.realVotes.set(votes);
+      this.calculateResults(this.combinedVotes());
+
     });
 
     const today = new Date().toISOString().split('T')[0];
@@ -93,12 +100,7 @@ export class SurveyDetailComponent {
   }
 
   /**
-   * Selects or unselects an answer for a question.
-   * Supports both single-choice and multiple-choice questions.
-   *
-   * @param qIndex Index of the question.
-   * @param aIndex Index of the answer option.
-   * @param allowMultiple Whether multiple answers are allowed.
+   * Updates selected answers and manages temporary local votes.
    */
   toggleAnswer(qIndex: number, aIndex: number, allowMultiple: boolean): void {
     const all = this.answers();
@@ -119,9 +121,30 @@ export class SurveyDetailComponent {
     const newState: any = {};
     for (const key in all) newState[key] = all[key];
     newState[qIndex] = updated;
-
     this.answers.set(newState);
+
+    const s = this.survey();
+    if (!s) return;
+
+    if (updated.includes(aIndex)) {
+      const opt = s.questions[qIndex].options[aIndex];
+      this.localVotes.set([
+        {
+          survey_id: s.id,
+          question_index: qIndex,
+          selected_options: [aIndex],
+          answer_text: opt.text,
+          vote_count: 1
+        }
+      ]);
+    } else {
+      this.localVotes.set([]);
+    }
+
+    this.calculateResults(this.combinedVotes());
   }
+  
+  
 
   /**
    * Submits all selected answers as individual votes.
@@ -171,11 +194,12 @@ export class SurveyDetailComponent {
     if (!survey) return;
 
     const results = survey.questions.map((q, qi) => {
-      const questionVotes = votes.filter(v => v.question_index === qi);
-      const total = this.sumVotes(questionVotes);
-      const options = this.buildOptionResults(q.options, questionVotes, total);
+      const qv = votes.filter(v => v.question_index === qi);
+      const total = this.sumVotes(qv);
+      const options = this.buildOptionResults(q.options, qv, total);
       return { question: q.title, options };
     });
+    
 
     this.results.set(results);
     this.hasVotes.set(votes.length > 0);
@@ -189,16 +213,22 @@ export class SurveyDetailComponent {
   }
 
   /**
-   * Builds option results including percentage values.
+   * Builds option results using index-based vote matching.
    */
   private buildOptionResults(options: any[], votes: any[], total: number): any[] {
     return options.map((o, oi) => {
-      const entry = votes.find(v => v.answer_text === o.text);
-      const count = entry?.vote_count ?? 0;
+      let count = 0;
+      for (let i = 0; i < votes.length; i++) {
+        const v = votes[i];
+        if (v.selected_options && v.selected_options[0] === oi) {
+          count += v.vote_count ?? 0;
+        }
+      }
       const percent = total ? Math.round((count / total) * 100) : 0;
       return { label: oi, percent };
     });
   }
+  
   
   /**
    * Toggles visibility of the results section.
@@ -206,4 +236,20 @@ export class SurveyDetailComponent {
   toggleResults(): void {
     this.showResults = !this.showResults;
   }
+
+  /**
+ * Combines real votes with temporary local votes.
+ */
+  combinedVotes(): any[] {
+    const all: any[] = [];
+    const real = this.realVotes();
+    const local = this.localVotes();
+
+    for (let i = 0; i < real.length; i++) all.push(real[i]);
+    for (let i = 0; i < local.length; i++) all.push(local[i]);
+
+    return all;
+  }
+
+
 }
