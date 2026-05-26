@@ -93,9 +93,9 @@
 
   .meta-item {
     display: grid;
-      grid-template-columns: 1fr 32px;
-      align-items: start;
-      gap: 0.6rem;
+    grid-template-columns: 1fr 32px;
+    align-items: start;
+    gap: 0.6rem;
 
     label {
       display: flex;
@@ -200,7 +200,6 @@
   flex-shrink: 0;
 }
 
-/* ANSWERS SECTION */
 .answers {
   display: flex;
   flex-direction: column;
@@ -315,7 +314,6 @@
   align-self: start;
 }
 
-/* FOOTER ACTIONS */
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -348,8 +346,12 @@
 }
 
 .error {
+  position: absolute;
+  left: 0;
+  bottom: -1.1rem;
   color: red;
   font-size: 0.9rem;
+  pointer-events: none;
 }
 
 .submit-btn {
@@ -372,4 +374,85 @@
 select.invalid,
 textarea.invalid {
   border: 2px solid red !important;
+}
+
+.meta-item,
+.question-block,
+.answers .answer-row {
+  position: relative;
+}
+
+.meta-item label,
+.question-block,
+.answers .answer-row {
+  margin-bottom: 1.4rem;
+}
+
+.answers .answer-row {
+  position: relative;
+  margin-bottom: 1.4rem;
+
+  .answer-error {
+    position: absolute;
+    bottom: -1.2rem;
+    margin: 0;
+  }
+}
+
+@media (min-width: $bp-lg) {
+  .answers .answer-row {
+    .answer-error {
+      grid-column: 2 / span 2;
+      position: absolute;
+    }
+  }
+}
+
+.category-row {
+  position: relative;
+  margin-bottom: 1.2rem;
+
+  select {
+    width: 100%;
+  }
+
+  label {
+    position: relative;
+  }
+
+    .category-error {
+      position: absolute;
+      left: 0;
+      bottom: -1.3rem;
+      margin: 0;
+    }
+}
+
+.question-block input.styled-input {
+  position: relative;
+}
+
+.question-block .error {
+  position: absolute;
+  left: 0;
+  bottom: -1.1rem;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 2.2rem;
+  display: flex;
+  flex-direction: column;
+
+  .error {
+    position: absolute;
+    left: 0;
+    bottom: -1.8rem;
+    white-space: nowrap;
+
+    &:nth-of-type(2) {
+      bottom: -2.8rem;
+    }
+  }
 }

@@ -26,23 +26,24 @@
         <div class="meta-item name">
             <label>
                 <span>Survey name</span>
-            
+
                 <input class="styled-input" type="text" placeholder="Name your survey" [value]="surveyDraft.title"
-                    (input)="surveyDraft.title = $any($event.target).value" (blur)="touched['title'] = true" [class.invalid]="(showErrors() || touched['title']) &&
+                    (input)="surveyDraft.title = $any($event.target).value" (blur)="touched['title'] = true"
+                    [class.invalid]="(showErrors() || touched['title']) &&
                                                  (!surveyDraft.title.trim() ||
                                                   (surveyDraft.title.trim().length > 0 && surveyDraft.title.trim().length < 3))" />
-            
+
                 @if ((showErrors() || touched['title']) && !surveyDraft.title.trim()) {
                 <p class="error">please enter a survey name</p>
                 }
-            
+
                 @if ((showErrors() || touched['title']) &&
                 surveyDraft.title.trim().length > 0 &&
                 surveyDraft.title.trim().length < 3) { <p class="error">minimum 3 characters required</p>
                     }
-            
+
             </label>
-            
+
 
             <button type="button" class="delete-btn" (click)="surveyDraft.title = ''"></button>
         </div>
@@ -93,25 +94,24 @@
             <div class="category-row">
                 <label>
                     <div class="pulldown" [class.open]="categoryOpen">
-                        <select [value]="surveyDraft.category"
-                            (change)="surveyDraft.category = $any($event.target).value"
-                            (click)="categoryOpen = !categoryOpen"
-                            (blur)="categoryOpen = false; touched['category'] = true"
+                        <select [value]="surveyDraft.category" (change)="surveyDraft.category = $any($event.target).value"
+                            (click)="categoryOpen = !categoryOpen" (blur)="categoryOpen = false; touched['category'] = true"
                             [class.invalid]="(showErrors() || touched['category']) && !surveyDraft.category.trim()">
-
+            
                             <option value="" disabled>Select category</option>
-
+            
                             @for (c of categories(); track c.id) {
                             <option [value]="c.id">{{ c.label }}</option>
                             }
                         </select>
                     </div>
-
-                    @if ((showErrors() || touched['category']) && !surveyDraft.category.trim()) {
-                    <p class="error">please select a Category</p>
-                    }
                 </label>
+
+                @if ((showErrors() || touched['category']) && !surveyDraft.category.trim()) {
+                <p class="error category-error">please select a Category</p>
+                }
             </div>
+            
 
         </div>
 
@@ -130,63 +130,63 @@
             </div>
 
             <!-- QUESTION TEXT -->
-            <input class="styled-input" type="text" placeholder="Question text" [value]="q.text"
-                (input)="q.text = $any($event.target).value" (blur)="touched['question' + i] = true"
-                [class.invalid]="(showErrors() || touched['question' + i]) && (!q.text.trim() || q.text.trim().length < 3)" />
-
+            <div class="input-wrapper">
+                <input class="styled-input" type="text" placeholder="Question text" [value]="q.text"
+                    (input)="q.text = $any($event.target).value" (blur)="touched['question' + i] = true"
+                    [class.invalid]="(showErrors() || touched['question' + i]) && (!q.text.trim() || q.text.trim().length < 3)" />
+            
                 @if ((showErrors() || touched['question' + i]) && !q.text.trim()) {
                 <p class="error">please enter a question</p>
                 }
-                
-                @if ((showErrors() || touched['question' + i])
-                && q.text.trim().length > 0
-                && q.text.trim().length < 3) { <p class="error">minimum 3 characters required</p>
+            
+                @if ((showErrors() || touched['question' + i]) && q.text.trim().length > 0 && q.text.trim().length < 3) { <p
+                    class="error">minimum 3 characters required</p>
                     }
-                  
+            
+                    @if ((showErrors() || touched['question' + i]) && q.answers.length < 2) { <p class="error">Question must have at
+                        least 2 answers</p>
+                        }
+            </div>
+            
 
-                @if ((showErrors() || touched['question' + i]) && q.answers.length < 2) { <p class="error">Question must
-                    have at least 2 answers</p>
+            <!-- ANSWERS -->
+            <div class="answers">
+
+                <div class="answers-header">
+                    <h3>Answers</h3>
+
+                    <label class="allow-multiple">
+                        <input type="checkbox" [checked]="q.allowMultiple"
+                            (change)="q.allowMultiple = $any($event.target).checked" />
+                        Allow multiple answers
+                    </label>
+                </div>
+
+                @for (a of q.answers; let j = $index; track j) {
+
+                <div class="answer-row">
+                    <span class="label">{{ toLetter(j) }}.</span>
+
+                    <input class="styled-input" type="text" placeholder="Answer"
+                        [value]="surveyDraft.questions[i].answers[j]"
+                        (input)="surveyDraft.questions[i].answers[j] = $any($event.target).value"
+                        (blur)="touched['answer' + i + '-' + j] = true"
+                        [class.invalid]="(showErrors() || touched['answer' + i + '-' + j]) && !surveyDraft.questions[i].answers[j].trim()" />
+
+                    <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
+
+                    @if ((showErrors() || touched['answer' + i + '-' + j]) &&
+                    !surveyDraft.questions[i].answers[j].trim()) {
+                    <p class="error answer-error">please enter an answer</p>
                     }
+                </div>
+                }
 
-                    <!-- ANSWERS -->
-                    <div class="answers">
+                <button type="button" class="link-button" (click)="addAnswer(i)">
+                    Add answer +
+                </button>
 
-                        <div class="answers-header">
-                            <h3>Answers</h3>
-
-                            <label class="allow-multiple">
-                                <input type="checkbox" [checked]="q.allowMultiple"
-                                    (change)="q.allowMultiple = $any($event.target).checked" />
-                                Allow multiple answers
-                            </label>
-                        </div>
-
-                        @for (a of q.answers; let j = $index; track j) {
-
-                        <div class="answer-row">
-                            <span class="label">{{ toLetter(j) }}.</span>
-
-                            <input class="styled-input" type="text" placeholder="Answer"
-                                [value]="surveyDraft.questions[i].answers[j]"
-                                (input)="surveyDraft.questions[i].answers[j] = $any($event.target).value"
-                                (blur)="touched['answer' + i + '-' + j] = true"
-                                [class.invalid]="(showErrors() || touched['answer' + i + '-' + j]) && !surveyDraft.questions[i].answers[j].trim()" />
-
-                            <button type="button" class="delete-btn" (click)="removeAnswer(i, j)"></button>
-                        </div>
-
-                        @if ((showErrors() || touched['answer' + i + '-' + j]) &&
-                        !surveyDraft.questions[i].answers[j].trim()) {
-                        <p class="error answer-error">please enter an answer</p>
-                        }
-
-                        }
-
-                        <button type="button" class="link-button" (click)="addAnswer(i)">
-                            Add answer +
-                        </button>
-
-                    </div>
+            </div>
 
         </div>
         }
