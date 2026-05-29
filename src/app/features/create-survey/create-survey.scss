@@ -5,9 +5,9 @@
 
 :host {
   display: block;
-  background: #ffffff;
   position: relative;
   z-index: 1;
+  background: transparent;
 }
 
 .create-survey {
@@ -250,6 +250,7 @@
     column-gap: 0.8rem;
     row-gap: 0.4rem;
     align-items: center;
+    margin-bottom: 1.8rem;
 
     .label {
       grid-column: 1;
@@ -348,10 +349,12 @@
 .error {
   position: absolute;
   left: 0;
-  bottom: -1.1rem;
+  bottom: -0.2rem;
   color: red;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   pointer-events: none;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .submit-btn {
@@ -410,7 +413,7 @@ textarea.invalid {
 
 .category-row {
   position: relative;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.8rem;
 
   select {
     width: 100%;
@@ -420,12 +423,12 @@ textarea.invalid {
     position: relative;
   }
 
-    .category-error {
-      position: absolute;
-      left: 0;
-      bottom: -1.3rem;
-      margin: 0;
-    }
+  .category-error {
+    position: absolute;
+    left: 0;
+    bottom: -1.2rem;
+    margin: 0;
+  }
 }
 
 .question-block input.styled-input {

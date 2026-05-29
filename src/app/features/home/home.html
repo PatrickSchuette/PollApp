@@ -66,4 +66,13 @@
         </app-survey-list>
     </div>
 
+    @if (isCreateOpen()) {
+    <div class="modal-overlay" (click)="isCreateOpen.set(false)">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+            <app-create-survey (close)="isCreateOpen.set(false)"></app-create-survey>
+        </div>
+    </div>
+    }
+      
+
 </section>

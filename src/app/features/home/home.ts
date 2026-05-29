@@ -5,13 +5,14 @@ import { EndingSoonComponent } from './ending-soon/ending-soon';
 import { Router } from '@angular/router';
 import { CategoryService } from '../../shared/services/category';
 import { FormsModule } from '@angular/forms';
+import { CreateSurveyComponent } from '../create-survey/create-survey';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
-  imports: [SurveyListComponent, EndingSoonComponent, FormsModule],
+  imports: [SurveyListComponent, EndingSoonComponent, FormsModule, CreateSurveyComponent],
 })
 export class HomeComponent {
   private surveyService = inject(SurveyService);
@@ -31,6 +32,7 @@ export class HomeComponent {
   past = computed(() => this.filterSurveysByStatus(true));
   endingSoon = computed(() => this.getSortedEndingSoon());
   maxDaysLimit = computed(() => this.calculateMaxDays());
+  isCreateOpen = signal(false);
 
   maxDaysSlider = computed(() => {
     const userValue = this.userSelectedDays();
@@ -109,10 +111,10 @@ export class HomeComponent {
   }
 
   /**
-   * Navigates to create page.
+   * open Modal for create new Survey.
    */
   goToCreate(): void {
-    this.router.navigate(['/create']);
+    this.isCreateOpen.set(true);
   }
 
   /**

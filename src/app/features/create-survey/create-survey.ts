@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef, signal } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, signal, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { ViewEncapsulation } from '@angular/core';
 import { SurveyService } from '../../shared/services/survey.service';
 import { CategoryService } from '../../shared/services/category';
 import DOMPurify from 'dompurify';
+
 
 @Component({
   selector: 'app-create-survey',
@@ -49,6 +50,8 @@ export class CreateSurveyComponent {
 
   categories = this.categoryService.categories;
   categoryOpen = false;
+  @Output() close = new EventEmitter<void>();
+
 
   /**
    * Adds a new question with two default answers if limit not reached.
@@ -183,10 +186,10 @@ export class CreateSurveyComponent {
   }
   
   /**
-   * Navigates to home page.
+   * close Modal
    */
   goHome(): void {
-    this.router.navigate(['/']);
+    this.close.emit();
   }
 
   /**
