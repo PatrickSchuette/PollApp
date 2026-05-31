@@ -53,6 +53,11 @@ export class SurveyDetailComponent {
     this.isClosed.set(data.isfinished || data.enddate < today);
   }
 
+  ngOnDestroy(): void {
+    this.surveyService.unsubscribeDetailVotes();
+  }
+  
+
   /**
    * Handles answer selection.
    */

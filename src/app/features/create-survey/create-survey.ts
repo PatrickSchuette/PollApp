@@ -67,7 +67,7 @@ export class CreateSurveyComponent {
       allowMultiple: false,
       answers: ['', '']
     });
-  }  
+  }
 
   /**
    * Adds an answer if limit not reached.
@@ -79,7 +79,7 @@ export class CreateSurveyComponent {
       return;
     }
     list.push('');
-  }  
+  }
 
   /**
    * Removes an answer from a question.
@@ -91,7 +91,7 @@ export class CreateSurveyComponent {
 
     this.touched['question' + qIndex] = true;
   }
-  
+
 
   /**
    * Removes a question.
@@ -113,7 +113,10 @@ export class CreateSurveyComponent {
   isValid(): boolean {
     if (!this.surveyDraft.title.trim()) return false;
     if (!this.surveyDraft.category.trim()) return false;
-
+    if (this.surveyDraft.questions.length === 0) {
+      this.errorMessage = 'Survey must contain at least one question';
+      this.errorDialog = true; return false;
+    }
     for (let i = 0; i < this.surveyDraft.questions.length; i++) {
       const q = this.surveyDraft.questions[i];
       if (!q.text.trim()) return false;
@@ -124,7 +127,7 @@ export class CreateSurveyComponent {
       }
     }
     return true;
-  }  
+  }
 
   /**
    * Checks all survey fields for unsafe HTML or JavaScript.
@@ -164,7 +167,6 @@ export class CreateSurveyComponent {
     const timer = this.countdown * 1000;
     await this.executePublish(timer);
   }
-  
 
   /**
    * Executes the publish request and handles success or error states.
@@ -176,16 +178,20 @@ export class CreateSurveyComponent {
       this.createdSurveyId = survey.id;
       this.successDialog = true;
       this.startCountdown();
-      setTimeout(() => this.cdr.detectChanges());
-      this.close.emit();
-      this.redirectTimeout = setTimeout(() => this.router.navigate(['/']), timer);
+      this.cdr.detectChanges();
+      this.redirectTimeout = setTimeout(() => {
+        this.close.emit(); 
+        this.router.navigate(['/']);
+      }, timer);
+
     } catch (err: any) {
       this.errorMessage = err?.message ?? 'Unknown error';
       this.errorDialog = true;
-      setTimeout(() => this.cdr.detectChanges());
+      this.cdr.detectChanges();
     }
   }
-  
+
+
   /**
    * close Modal
    */
@@ -232,9 +238,11 @@ export class CreateSurveyComponent {
   goToSurvey(): void {
     clearInterval(this.countdownInterval);
     clearTimeout(this.redirectTimeout);
+    this.close.emit();
     this.router.navigate(['/survey', this.createdSurveyId]);
   }
-  
+
+
   /**
  * Shows a temporary error dialog for limit violations.
  */
@@ -247,4 +255,19 @@ export class CreateSurveyComponent {
     }, 2000);
   }
 
+  /**
+   * Clears a form field and resets its touched state.
+   * @param setter A function that assigns the new value to the target field.
+   * @param touchedKey The touched-state key that should be reset.
+   */
+  clearField(setter: (v: string) => void, touchedKey: string): void {
+    setter('');
+    this.touched[touchedKey] = false;
+  }
+
+  closeErrorDialog(event: MouseEvent): void {
+    event.stopPropagation(); 
+    event.preventDefault(); 
+    this.errorDialog = false; 
+  }
 }

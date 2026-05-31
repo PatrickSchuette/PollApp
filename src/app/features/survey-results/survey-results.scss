@@ -13,9 +13,24 @@ h2 {
     margin: 0 0 1.6rem 0;
     font-size: 1.4rem;
     font-weight: 700;
+    font-family: 'Nerko One', cursive;
+    font-size: 1.2rem;
+    margin: 3rem 0 1.5rem;
 
     .fontYellow {
         color: #EE9236;
+    }
+
+    @media (min-width: $bp-md) {
+        font-size: 1.4rem;
+    }
+
+    @media (min-width: $bp-lg) {
+        font-size: 2.0rem;
+    }
+
+    @media (min-width: $bp-xl) {
+        font-size: 2.4rem;
     }
 }
 

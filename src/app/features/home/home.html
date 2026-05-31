@@ -48,15 +48,16 @@
             </div>
 
             <div class="pulldown" [class.open]="categoryOpen()">
-                <select name="surveyCategory" (click)="categoryOpen.set(!categoryOpen())"
-                    (blur)="categoryOpen.set(false)" [(ngModel)]="filterCategory">
-                    <option value="" disabled hidden>Select category</option>
-
+                <select name="surveyCategory" (click)="categoryOpen.set(!categoryOpen())" (blur)="categoryOpen.set(false)"
+                    [(ngModel)]="filterCategory">
+                    <option value="">Sort by categories</option>
+            
                     @for (c of categories(); track c.id) {
                     <option [value]="c.id">{{ c.label }}</option>
                     }
                 </select>
             </div>
+              
 
         </div>
 

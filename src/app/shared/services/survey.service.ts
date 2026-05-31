@@ -5,6 +5,7 @@ import { SupabaseService } from './supabase.service';
 export class SurveyService implements OnDestroy {
   private supabase = inject(SupabaseService).client;
   public surveys = signal<any[]>([]);
+  private detailVoteChannel: any = null;
 
   /**
    * Sets up database connections and starts listening to updates.
@@ -232,18 +233,20 @@ export class SurveyService implements OnDestroy {
  * @param {(votes:any[]) => void} callback - Called when votes change.
  */
   subscribeToSurveyVotes(id: string, callback: (votes: any[]) => void): void {
-    this.supabase
-      .channel('detail-votes-' + id)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'votes', filter: `survey_id=eq.${id}` },
-        async () => {
-          const votes = await this.getVotes(id);
-          callback(votes);
-        }
-      )
-      .subscribe();
+    if (this.detailVoteChannel) return;
+    const channel = this.supabase.channel('detail-votes-' + id);
+    channel.on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'votes', filter: 'survey_id=eq.' + id },
+      async () => {
+        const v = await this.getVotes(id);
+        callback(v);
+      }
+    );
+    channel.subscribe();
+    this.detailVoteChannel = channel;
   }
+  
   
   /**
    * Updates the survey list when a vote changes.
@@ -282,4 +285,11 @@ export class SurveyService implements OnDestroy {
   ngOnDestroy(): void {
     this.supabase.removeAllChannels();
   }
+
+  unsubscribeDetailVotes(): void {
+    if (!this.detailVoteChannel) return;
+    this.supabase.removeChannel(this.detailVoteChannel);
+    this.detailVoteChannel = null;
+  }
+  
 }
