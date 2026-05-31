@@ -161,11 +161,17 @@
 
   @media (min-width: $bp-md) {
     padding: 0 1.2rem 1.2rem;
+    max-height: 460px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #FFB770 transparent;
+    scroll-padding-right: 8px;
   }
 
   @media (min-width: $bp-lg) {
     grid-template-columns: 1fr 1fr;
     padding: 0 1.8rem 1.8rem;
+
   }
 }
 

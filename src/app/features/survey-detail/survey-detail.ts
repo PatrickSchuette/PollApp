@@ -8,12 +8,6 @@ import { SurveyResultsComponent } from '../survey-results/survey-results';
 import { CategoryService } from '../../shared/services/category';
 import { CreateSurveyComponent } from '../create-survey/create-survey';
 
-
-/**
- * Displays a full survey including questions, answer options,
- * live vote updates and result visualization.
- * Handles user selections, voting and navigation.
- */
 @Component({
   selector: 'app-survey-detail',
   standalone: true,
@@ -22,54 +16,16 @@ import { CreateSurveyComponent } from '../create-survey/create-survey';
   imports: [LetterPipe, SurveyResultsComponent, CreateSurveyComponent],
 })
 export class SurveyDetailComponent {
-
-  /**
-   * Provides category metadata such as labels and colors.
-   */
   categoryService = inject(CategoryService);
-
-  /**
-   * Holds the fully loaded survey including all nested questions and options.
-   */
   survey = signal<SurveyFull | null>(null);
-
-  /**
-   * Stores selected answers per question index.
-   * Structure: { [questionIndex]: number[] }
-   */
-  answers = signal<{ [questionIndex: number]: number[] }>({});
-
-  /**
-   * Controls visibility of the temporary success dialog after voting.
-   */
+  answers = signal<{ [index: number]: number[] }>({});
   showSuccess = signal(false);
-
-  /**
-   * Holds calculated vote results for each question.
-   */
   results = signal<any[]>([]);
-
-  /**
-   * Indicates whether the survey already has votes.
-   */
   hasVotes = signal(false);
-
-  /**
-   * Indicates whether the survey is closed (end date reached or manually finished).
-   */
   isClosed = signal(false);
-
-  /**
-   * Controls visibility of the results section.
-   */
   showResults = false;
-
-  /**
-   * Utility function to calculate remaining days until survey end.
-   */
   getDaysLeft = getDaysLeft;
-
-  localVotes = signal<any[]>([]);
+  localVotes = signal<{ [index: number]: any[] }>({});
   realVotes = signal<any[]>([]);
   isCreateOpen = signal(false);
 
@@ -78,8 +34,7 @@ export class SurveyDetailComponent {
   private router = inject(Router);
 
   /**
-   * Loads the survey, its questions and live vote data.
-   * Subscribes to real-time vote updates.
+   * Loads survey and initializes vote data.
    */
   async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
@@ -90,84 +45,112 @@ export class SurveyDetailComponent {
     const votes = await this.surveyService.getVotes(id);
     this.realVotes.set(votes);
     this.calculateResults(this.combinedVotes());
-
-
-    this.surveyService.subscribeToSurveyVotes(id, votes => {
-      this.realVotes.set(votes);
+    this.surveyService.subscribeToSurveyVotes(id, v => {
+      this.realVotes.set(v);
       this.calculateResults(this.combinedVotes());
-
     });
-
     const today = new Date().toISOString().split('T')[0];
     this.isClosed.set(data.isfinished || data.enddate < today);
   }
 
   /**
-   * Updates selected answers and manages temporary local votes.
+   * Handles answer selection.
    */
   toggleAnswer(qIndex: number, aIndex: number, allowMultiple: boolean): void {
-    const all = this.answers();
-    const current = all[qIndex] || [];
-    let updated: number[] = [];
-
-    if (allowMultiple) {
-      let exists = false;
-      for (let i = 0; i < current.length; i++) {
-        if (current[i] === aIndex) exists = true;
-        else updated.push(current[i]);
-      }
-      if (!exists) updated.push(aIndex);
-    } else {
-      updated = [aIndex];
-    }
-
-    const newState: any = {};
-    for (const key in all) newState[key] = all[key];
-    newState[qIndex] = updated;
-    this.answers.set(newState);
-
+    const updated = this.buildUpdatedAnswers(
+      this.answers()[qIndex] || [],
+      aIndex,
+      allowMultiple
+    );
+    this.updateAnswersState(qIndex, updated);
     const s = this.survey();
     if (!s) return;
-
-    if (updated.includes(aIndex)) {
-      const opt = s.questions[qIndex].options[aIndex];
-      this.localVotes.set([
-        {
-          survey_id: s.id,
-          question_index: qIndex,
-          selected_options: [aIndex],
-          answer_text: opt.text,
-          vote_count: 1
-        }
-      ]);
-    } else {
-      this.localVotes.set([]);
-    }
-
+    this.updateLocalVotes(qIndex, aIndex, updated, s.id);
     this.calculateResults(this.combinedVotes());
   }
-  
-  
 
   /**
-   * Submits all selected answers as individual votes.
-   * Shows a success dialog and redirects to the home page.
+   * Builds updated answer list.
+   */
+  private buildUpdatedAnswers(
+    current: number[],
+    option: number,
+    allowMultiple: boolean
+  ): number[] {
+    const updated: number[] = [];
+    if (!allowMultiple) {
+      updated.push(option);
+      return updated;
+    }
+    let exists = false;
+    for (let i = 0; i < current.length; i++) {
+      if (current[i] === option) exists = true;
+      else updated.push(current[i]);
+    }
+    if (!exists) updated.push(option);
+    return updated;
+  }
+
+  /**
+   * Updates global answer state.
+   */
+  private updateAnswersState(
+    qIndex: number,
+    updated: number[]
+  ): void {
+    const all = this.answers();
+    const newState: { [index: number]: number[] } = {};
+    for (const key in all) newState[Number(key)] = all[key];
+    newState[qIndex] = updated;
+    this.answers.set(newState);
+  }
+
+  /**
+   * Updates local preview votes.
+   */
+  private updateLocalVotes(
+    qIndex: number,
+    aIndex: number,
+    updated: number[],
+    surveyId: string
+  ): void {
+    const s = this.survey();
+    if (!s) return;
+    const lv = this.localVotes();
+    const newLocal: { [index: number]: any[] } = {};
+    for (const key in lv) newLocal[Number(key)] = lv[key];
+    if (updated.length === 0) {
+      delete newLocal[qIndex];
+      this.localVotes.set(newLocal);
+      return;
+    }
+    const opt = s.questions[qIndex].options[aIndex];
+    newLocal[qIndex] = [
+      {
+        survey_id: surveyId,
+        question_index: qIndex,
+        selected_options: [aIndex],
+        answer_text: opt.text,
+        vote_count: 1,
+      },
+    ];
+    this.localVotes.set(newLocal);
+  }
+
+  /**
+   * Submits all selected votes.
    */
   async completeSurvey(): Promise<void> {
-    const survey: SurveyFull | null = this.survey();
-    if (!survey) return;
-    const answers = this.answers();
-
-    for (const qIndex in answers) {
-      for (const aIndex of answers[qIndex]) {
-        await this.surveyService.submitVote(
-          survey.id,
-          Number(qIndex),
-          aIndex
-        );
+    const s = this.survey();
+    if (!s) return;
+    const ans = this.answers();
+    for (const key in ans) {
+      const q = Number(key);
+      const arr = ans[q];
+      for (let i = 0; i < arr.length; i++) {
+        await this.surveyService.submitVote(s.id, q, arr[i]);
       }
     }
-
     this.showSuccess.set(true);
     setTimeout(() => {
       this.showSuccess.set(false);
@@ -176,90 +159,117 @@ export class SurveyDetailComponent {
   }
 
   /**
-   * Navigates to the survey creation page.
-   */
-  goToCreateSurvey(): void {
-    this.isCreateOpen.set(true);
-    document.body.style.overflow = 'hidden';
-  }
-  
-
-  /**
-   * Navigates back to the home page.
-   */
-  goHome(): void {
-    this.router.navigate(['/']);
-  }
-
-  /**
-   * Aggregates vote data per question and calculates percentages.
+   * Calculates results for all questions.
    */
   calculateResults(votes: any[]): void {
-    const survey = this.survey();
-    if (!survey) return;
-
-    const results = survey.questions.map((q, qi) => {
-      const qv = votes.filter(v => v.question_index === qi);
+    const s = this.survey();
+    if (!s) return;
+    const res: any[] = [];
+    for (let i = 0; i < s.questions.length; i++) {
+      const q = s.questions[i];
+      const qv = this.filterVotesByQuestion(votes, i);
       const total = this.sumVotes(qv);
-      const options = this.buildOptionResults(q.options, qv, total);
-      return { question: q.title, options };
-    });
-    
-
-    this.results.set(results);
+      const opts = this.buildOptionResults(q.options, qv, total);
+      res.push({ question: q.title, options: opts });
+    }
+    this.results.set(res);
     this.hasVotes.set(votes.length > 0);
   }
-  
+
   /**
- * Sums all vote counts for a question.
- */
-  private sumVotes(votes: any[]): number {
-    return votes.reduce((sum, v) => sum + (v.vote_count ?? 0), 0);
+   * Filters votes for a question.
+   */
+  private filterVotesByQuestion(
+    votes: any[],
+    qIndex: number
+  ): any[] {
+    const arr: any[] = [];
+    for (let i = 0; i < votes.length; i++) {
+      if (votes[i].question_index === qIndex) arr.push(votes[i]);
+    }
+    return arr;
   }
 
   /**
-   * Builds option results using index-based vote matching.
+   * Sums vote counts.
    */
-  private buildOptionResults(options: any[], votes: any[], total: number): any[] {
-    return options.map((o, oi) => {
+  private sumVotes(votes: any[]): number {
+    let sum = 0;
+    for (let i = 0; i < votes.length; i++) {
+      const c = votes[i].vote_count ? votes[i].vote_count : 0;
+      sum = sum + c;
+    }
+    return sum;
+  }
+
+  /**
+   * Builds option result list.
+   */
+  private buildOptionResults(
+    options: any[],
+    votes: any[],
+    total: number
+  ): any[] {
+    const arr: any[] = [];
+    for (let i = 0; i < options.length; i++) {
       let count = 0;
-      for (let i = 0; i < votes.length; i++) {
-        const v = votes[i];
-        if (v.selected_options && v.selected_options[0] === oi) {
-          count += v.vote_count ?? 0;
+      for (let j = 0; j < votes.length; j++) {
+        const sel = votes[j].selected_options
+          ? votes[j].selected_options[0]
+          : null;
+        if (sel === i) {
+          const c = votes[j].vote_count ? votes[j].vote_count : 0;
+          count = count + c;
         }
       }
       const percent = total ? Math.round((count / total) * 100) : 0;
-      return { label: oi, percent };
-    });
+      arr.push({ label: i, percent });
+    }
+    return arr;
   }
-  
-  
+
   /**
-   * Toggles visibility of the results section.
+   * Combines real and local votes.
+   */
+  combinedVotes(): any[] {
+    const real = this.realVotes();
+    const local = this.localVotes();
+    const all: any[] = [];
+    for (let i = 0; i < real.length; i++) all.push(real[i]);
+    for (const key in local) {
+      const arr = local[key];
+      for (let j = 0; j < arr.length; j++) all.push(arr[j]);
+    }
+    return all;
+  }
+
+  /**
+   * Toggles result visibility.
    */
   toggleResults(): void {
     this.showResults = !this.showResults;
   }
 
   /**
- * Combines real votes with temporary local votes.
- */
-  combinedVotes(): any[] {
-    const all: any[] = [];
-    const real = this.realVotes();
-    const local = this.localVotes();
-
-    for (let i = 0; i < real.length; i++) all.push(real[i]);
-    for (let i = 0; i < local.length; i++) all.push(local[i]);
-
-    return all;
+   * Opens create survey overlay.
+   */
+  goToCreateSurvey(): void {
+    this.isCreateOpen.set(true);
+    document.body.style.overflow = 'hidden';
   }
 
+  /**
+   * Navigates home.
+   */
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
+
+  /**
+   * Closes create survey overlay.
+   */
   closeCreate(): void {
     this.isCreateOpen.set(false);
     document.body.style.overflow = '';
   }
-  
-
 }
