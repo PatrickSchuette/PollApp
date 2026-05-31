@@ -6,6 +6,8 @@ import { SurveyFull } from '../../shared/interfaces/survey-full';
 import { getDaysLeft } from '../../shared/services/date.utils';
 import { SurveyResultsComponent } from '../survey-results/survey-results';
 import { CategoryService } from '../../shared/services/category';
+import { CreateSurveyComponent } from '../create-survey/create-survey';
+
 
 /**
  * Displays a full survey including questions, answer options,
@@ -17,7 +19,7 @@ import { CategoryService } from '../../shared/services/category';
   standalone: true,
   templateUrl: './survey-detail.html',
   styleUrls: ['./survey-detail.scss'],
-  imports: [LetterPipe, SurveyResultsComponent],
+  imports: [LetterPipe, SurveyResultsComponent, CreateSurveyComponent],
 })
 export class SurveyDetailComponent {
 
@@ -69,6 +71,7 @@ export class SurveyDetailComponent {
 
   localVotes = signal<any[]>([]);
   realVotes = signal<any[]>([]);
+  isCreateOpen = signal(false);
 
   private route = inject(ActivatedRoute);
   private surveyService = inject(SurveyService);
@@ -176,8 +179,10 @@ export class SurveyDetailComponent {
    * Navigates to the survey creation page.
    */
   goToCreateSurvey(): void {
-    this.router.navigate(['/create']);
+    this.isCreateOpen.set(true);
+    document.body.style.overflow = 'hidden';
   }
+  
 
   /**
    * Navigates back to the home page.
@@ -251,5 +256,10 @@ export class SurveyDetailComponent {
     return all;
   }
 
+  closeCreate(): void {
+    this.isCreateOpen.set(false);
+    document.body.style.overflow = '';
+  }
+  
 
 }

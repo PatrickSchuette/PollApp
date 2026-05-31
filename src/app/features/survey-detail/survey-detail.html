@@ -96,5 +96,13 @@
     </div>
     }
 
+    @if (isCreateOpen()) {
+    <div class="modal-overlay" (click)="closeCreate()">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+            <app-create-survey (close)="closeCreate()"></app-create-survey>
+        </div>
+    </div>
+    }
+      
 
 </div>

@@ -115,7 +115,14 @@ export class HomeComponent {
    */
   goToCreate(): void {
     this.isCreateOpen.set(true);
+    this.lockBodyScroll();
   }
+
+  closeCreate(): void {
+  this.isCreateOpen.set(false);
+  this.unlockBodyScroll();
+}
+
 
   /**
    * Sets active/past filter.
@@ -152,5 +159,14 @@ export class HomeComponent {
     }
     return result;
   }
+
+  lockBodyScroll() {
+  document.body.style.overflow = 'hidden';
+}
+
+unlockBodyScroll() {
+  document.body.style.overflow = '';
+}
+
 
 }

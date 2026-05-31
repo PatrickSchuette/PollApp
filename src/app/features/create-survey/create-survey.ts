@@ -177,6 +177,7 @@ export class CreateSurveyComponent {
       this.successDialog = true;
       this.startCountdown();
       setTimeout(() => this.cdr.detectChanges());
+      this.close.emit();
       this.redirectTimeout = setTimeout(() => this.router.navigate(['/']), timer);
     } catch (err: any) {
       this.errorMessage = err?.message ?? 'Unknown error';
