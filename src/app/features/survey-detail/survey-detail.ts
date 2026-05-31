@@ -124,18 +124,21 @@ export class SurveyDetailComponent {
       this.localVotes.set(newLocal);
       return;
     }
-    const opt = s.questions[qIndex].options[aIndex];
-    newLocal[qIndex] = [
-      {
+    const arr: any[] = [];
+    for (let i = 0; i < updated.length; i++) {
+      const opt = s.questions[qIndex].options[updated[i]];
+      arr.push({
         survey_id: surveyId,
         question_index: qIndex,
-        selected_options: [aIndex],
+        selected_options: [updated[i]],
         answer_text: opt.text,
-        vote_count: 1,
-      },
-    ];
+        vote_count: 1
+      });
+    }
+    newLocal[qIndex] = arr;
     this.localVotes.set(newLocal);
   }
+  
 
   /**
    * Submits all selected votes.
