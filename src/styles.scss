@@ -3,6 +3,22 @@
 @use './styles/components' as *;
 @use './styles/font';
 
+:root {
+  font-family: "Mulish", sans-serif;
+}
+
+
+html,
+body {
+
+  input,
+  button,
+  select,
+  textarea {
+    font-family: "Mulish", sans-serif !important;
+  }
+}
+
 body {
   background: #ffffff;
   color: $color-text-dark;

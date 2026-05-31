@@ -37,7 +37,7 @@
 }
 
 .survey-card {
-  
+  width: 100%;
   max-width: none;
   height: 127px;
   padding: 12px 20px;
@@ -54,18 +54,16 @@
   }
 
   @media (min-width: $bp-md) {
-    max-width: 513px;
-    width: 100%;
+    max-width: 380px;
   }
 
   @media (min-width: $bp-lg) {
-    max-width: 513px;
-    width: 100%;
+    width: calc(90% - 0.8rem);
+    max-width: none;
   }
 }
 
 .category {
-  font-family: Mulish;
   font-weight: 600;
   font-size: 14px;
   line-height: 100%;
@@ -73,7 +71,6 @@
 }
 
 .title {
-  font-family: Mulish;
   font-weight: 700;
   font-size: 22px;
   line-height: 110%;
@@ -81,7 +78,6 @@
 }
 
 .ends {
-  font-family: Mulish;
   font-weight: 600;
   font-size: 14px;
   opacity: 0.8;
