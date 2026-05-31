@@ -28,16 +28,16 @@
 }
 
 .ending-card {
-  width: 250px;
+  width: 220px;
   flex: 0 0 auto;
   scroll-snap-align: start;
-  height: 233px;
-  padding: 24px 16px;
+  height: 210px;
+  padding: 18px 14px;
   background: #FAF5FE;
-  border-radius: 0 80px 0 0;
+  border-radius: 0 70px 0 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   transition: background 0.2s ease;
 
@@ -46,29 +46,32 @@
   }
 
   @media (min-width: $bp-lg) {
-    width: 321px;
-    height: 310px;
-    padding: 40px 18px;
+    width: 290px;
+    height: 280px;
+    padding: 32px 16px;
+    border-radius: 0 75px 0 0;
   }
 }
 
-/* CATEGORY */
 .category {
   font-family: Mulish;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 100%;
   color: #221227;
   opacity: 0.9;
 }
 
-/* TITLE */
 .title {
   font-family: Mulish;
   font-weight: 700;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 110%;
   margin: 0;
   color: #221227;
   word-break: break-word;
+
+  @media (min-width: $bp-lg) {
+    font-size: 26px;
+  }
 }
