@@ -47,14 +47,22 @@
 
 .left {
   background: #8E70991A;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 0;
   border-top-right-radius: 160px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
 
-  @media (max-width: $bp-lg) {
+  @media (min-width: $bp-md) {
+      padding: 1.5rem;
+    }
+  
+    @media (min-width: $bp-lg) {
+      padding: 2rem;
+    }
+
+  @media (max-width: $bp-md) {
     grid-template-columns: 1fr;
   }
 
@@ -91,9 +99,10 @@
       grid-column: 2;
       text-align: right;
       white-space: nowrap;
+      padding-right: 32px;
 
       @media (min-width: $bp-lg) {
-        margin-right: 64px;
+        padding-right: 64px;
       }
     }
   }
@@ -126,10 +135,18 @@
   }
 
   .question-block {
-    padding: 2rem;
+    padding: 0.8rem;
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+
+    @media (min-width: $bp-md) {
+      padding: 1.5rem;
+      }
+    
+      @media (min-width: $bp-lg) {
+        padding: 2rem;
+      }
 
     h2 {
       margin: 0;
