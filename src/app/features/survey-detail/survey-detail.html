@@ -37,6 +37,9 @@
             </div>
 
             <h1>{{ s.title }}</h1>
+            @if(alreadyVoted){
+            <p class="already-voted">You have already participated in this survey.</p>
+            }
             <p class="description">{{ s.description }}</p>
 
             @for (q of s.questions; track q.id; let i = $index) {

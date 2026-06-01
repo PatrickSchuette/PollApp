@@ -10,17 +10,22 @@
 
             <div class="ends ends-banner">
                 @let days = getDaysLeft(s.enddate);
-            
+
                 @if (days === null) {
                 No end date
                 } @else if (days > 0) {
                 Ends in {{ days }} Days
                 } @else if (days < 0) { Ended {{ -days }} Days ago } @else { Ends today } </div>
-             
+
+
+            </div>
+            }
+
+            @if (surveys.length === 0) {
+            <div class="survey-card no-results-card">
+                <div class="title fontWhite">No surveys match your filter</div>
+            </div>
+            }
 
         </div>
-        } 
-
     </div>
-</div>
-  

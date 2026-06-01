@@ -28,6 +28,7 @@ export class SurveyDetailComponent {
   localVotes = signal<{ [index: number]: any[] }>({});
   realVotes = signal<any[]>([]);
   isCreateOpen = signal(false);
+  alreadyVoted = false;
 
   private route = inject(ActivatedRoute);
   private surveyService = inject(SurveyService);
@@ -39,9 +40,31 @@ export class SurveyDetailComponent {
   async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
+    await this.loadSurvey(id);
+    await this.loadVotes(id);
+    this.calculateResults(this.combinedVotes());
+  }
+  
+  /**
+   * Loads survey data and initializes closed/voted state.
+   */
+  private async loadSurvey(id: string): Promise<void> {
     const data = await this.surveyService.getSurveyWithQuestions(id);
     if (!data) return;
     this.survey.set(data);
+    const today = new Date().toISOString().split('T')[0];
+    this.isClosed.set(data.isfinished || data.enddate < today);
+    const voted = this.getVotedSurveys();
+    if (voted.includes(data.id)) {
+      this.alreadyVoted = true;
+      this.isClosed.set(true);
+    }
+  }
+  
+  /**
+ * Loads real votes and subscribes to live updates.
+ */
+  private async loadVotes(id: string): Promise<void> {
     const votes = await this.surveyService.getVotes(id);
     this.realVotes.set(votes);
     this.calculateResults(this.combinedVotes());
@@ -49,14 +72,36 @@ export class SurveyDetailComponent {
       this.realVotes.set(v);
       this.calculateResults(this.combinedVotes());
     });
-    const today = new Date().toISOString().split('T')[0];
-    this.isClosed.set(data.isfinished || data.enddate < today);
   }
 
+  /**
+   * Cleans up active subscriptions when the component is destroyed.
+   */
   ngOnDestroy(): void {
     this.surveyService.unsubscribeDetailVotes();
   }
-  
+
+  /**
+   * Retrieves the list of survey IDs the user has already voted on.
+   * @returns An array of survey IDs stored in localStorage.
+   */
+  private getVotedSurveys(): string[] {
+    const raw = localStorage.getItem('alreadyVoted');
+    return raw ? JSON.parse(raw) : [];
+  }
+
+  /**
+   * Stores a survey ID in localStorage to mark it as already voted.
+   * Prevents duplicate entries.
+   * @param id The ID of the survey to store.
+   */
+  private saveVotedSurvey(id: string): void {
+    const list = this.getVotedSurveys();
+    if (!list.includes(id)) {
+      list.push(id);
+      localStorage.setItem('alreadyVoted', JSON.stringify(list));
+    }
+  }   
 
   /**
    * Handles answer selection.
@@ -111,14 +156,9 @@ export class SurveyDetailComponent {
   }
 
   /**
-   * Updates local preview votes.
+   * Updates local preview votes for a question.
    */
-  private updateLocalVotes(
-    qIndex: number,
-    aIndex: number,
-    updated: number[],
-    surveyId: string
-  ): void {
+  private updateLocalVotes(qIndex: number, aIndex: number, updated: number[], surveyId: string): void {
     const s = this.survey();
     if (!s) return;
     const lv = this.localVotes();
@@ -132,21 +172,14 @@ export class SurveyDetailComponent {
     const arr: any[] = [];
     for (let i = 0; i < updated.length; i++) {
       const opt = s.questions[qIndex].options[updated[i]];
-      arr.push({
-        survey_id: surveyId,
-        question_index: qIndex,
-        selected_options: [updated[i]],
-        answer_text: opt.text,
-        vote_count: 1
-      });
+      arr.push({ survey_id: surveyId, question_index: qIndex, selected_options: [updated[i]], answer_text: opt.text, vote_count: 1 });
     }
     newLocal[qIndex] = arr;
     this.localVotes.set(newLocal);
   }
   
-
   /**
-   * Submits all selected votes.
+   * Submits all selected votes and finalizes survey state.
    */
   async completeSurvey(): Promise<void> {
     const s = this.survey();
@@ -159,13 +192,15 @@ export class SurveyDetailComponent {
         await this.surveyService.submitVote(s.id, q, arr[i]);
       }
     }
+    this.saveVotedSurvey(s.id);
     this.showSuccess.set(true);
+    this.surveyService.unsubscribeDetailVotes();
     setTimeout(() => {
       this.showSuccess.set(false);
       this.router.navigate(['/']);
     }, 1500);
   }
-
+  
   /**
    * Calculates results for all questions.
    */

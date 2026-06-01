@@ -7,7 +7,6 @@ import { SurveyService } from '../../shared/services/survey.service';
 import { CategoryService } from '../../shared/services/category';
 import DOMPurify from 'dompurify';
 
-
 @Component({
   selector: 'app-create-survey',
   standalone: true,
@@ -17,7 +16,6 @@ import DOMPurify from 'dompurify';
   encapsulation: ViewEncapsulation.None
 })
 export class CreateSurveyComponent {
-
   surveyDraft = {
     title: '',
     enddate: '',
@@ -33,7 +31,8 @@ export class CreateSurveyComponent {
   errorMessage = '';
   createdSurveyId = '';
   endDateError = false;
-  countdown = 5;
+  readonly redirectSeconds = 5;
+  countdown = this.redirectSeconds;
   redirectTimeout: any = null;
   countdownInterval: any = null;
   showErrors = signal(false);
@@ -41,7 +40,6 @@ export class CreateSurveyComponent {
   maxPossibleQuestions = 4;
   maxPossibleAnswers = 4;
   minRequiredAnswers = 2;
-
 
   readonly surveyService = inject(SurveyService);
   readonly categoryService = inject(CategoryService);
@@ -52,11 +50,11 @@ export class CreateSurveyComponent {
   categoryOpen = false;
   @Output() close = new EventEmitter<void>();
 
-
   /**
-   * Adds a new question with two default answers if limit not reached.
+   * Adds a new question with two default answers if the limit is not reached.
    */
   addQuestion(): void {
+    this.showErrors.set(false);
     if (this.surveyDraft.questions.length >= this.maxPossibleQuestions) {
       this.showLimitError('Maximum number of questions reached');
       return;
@@ -70,7 +68,8 @@ export class CreateSurveyComponent {
   }
 
   /**
-   * Adds an answer if limit not reached.
+   * Adds an answer to a question if the limit is not reached.
+   * @param qIndex Index of the question to add an answer to.
    */
   addAnswer(qIndex: number): void {
     const list = this.surveyDraft.questions[qIndex].answers;
@@ -83,40 +82,62 @@ export class CreateSurveyComponent {
 
   /**
    * Removes an answer from a question.
+   * @param qIndex Index of the question.
+   * @param aIndex Index of the answer to remove.
    */
   removeAnswer(qIndex: number, aIndex: number): void {
     const list = this.surveyDraft.questions[qIndex].answers;
-
     list.splice(aIndex, 1);
-
     this.touched['question' + qIndex] = true;
   }
 
-
   /**
-   * Removes a question.
+   * Removes a question from the survey draft.
+   * @param index Index of the question to remove.
    */
   removeQuestion(index: number): void {
     this.surveyDraft.questions.splice(index, 1);
   }
 
   /**
-   * Converts index to letter.
+   * Converts a numeric index to an uppercase letter.
+   * @param i Index to convert.
+   * @returns Corresponding letter.
    */
   toLetter(i: number): string {
     return String.fromCharCode(65 + i);
   }
 
   /**
-   * Validates required fields including minimum answers.
+   * Validates all required survey fields.
+   * @returns True if the survey draft is valid.
    */
   isValid(): boolean {
+    if (!this.validateHeaderFields()) return false;
+    if (!this.validateQuestions()) return false;
+    return true;
+  }
+
+  /**
+   * Validates title, category and question count.
+   * @returns True if header fields are valid.
+   */
+  private validateHeaderFields(): boolean {
     if (!this.surveyDraft.title.trim()) return false;
     if (!this.surveyDraft.category.trim()) return false;
     if (this.surveyDraft.questions.length === 0) {
       this.errorMessage = 'Survey must contain at least one question';
-      this.errorDialog = true; return false;
+      this.errorDialog = true;
+      return false;
     }
+    return true;
+  }
+
+  /**
+   * Validates all questions and their answers.
+   * @returns True if all questions are valid.
+   */
+  private validateQuestions(): boolean {
     for (let i = 0; i < this.surveyDraft.questions.length; i++) {
       const q = this.surveyDraft.questions[i];
       if (!q.text.trim()) return false;
@@ -134,20 +155,30 @@ export class CreateSurveyComponent {
    * @returns True if all fields are safe.
    */
   private isDraftSafe(): boolean {
+    const values = this.collectDraftValues();
+    for (let i = 0; i < values.length; i++) {
+      const v = values[i];
+      if (DOMPurify.sanitize(v) !== v) return false;
+    }
+    return true;
+  }
+
+  /**
+   * Collects all string values from the survey draft.
+   * @returns Array of all text values in the draft.
+   */
+  private collectDraftValues(): string[] {
     const values: string[] = [];
     values.push(this.surveyDraft.title);
     values.push(this.surveyDraft.description);
-
-    for (const q of this.surveyDraft.questions) {
+    for (let i = 0; i < this.surveyDraft.questions.length; i++) {
+      const q = this.surveyDraft.questions[i];
       values.push(q.text);
-      for (const a of q.answers) values.push(a);
+      for (let j = 0; j < q.answers.length; j++) {
+        values.push(q.answers[j]);
+      }
     }
-
-    for (const v of values) {
-      if (DOMPurify.sanitize(v) !== v) return false;
-    }
-
-    return true;
+    return values;
   }
 
   /**
@@ -164,71 +195,82 @@ export class CreateSurveyComponent {
       setTimeout(() => this.cdr.detectChanges());
       return;
     }
-    const timer = this.countdown * 1000;
-    await this.executePublish(timer);
+    await this.executePublish();
   }
 
   /**
    * Executes the publish request and handles success or error states.
-   * @param timer Redirect delay in milliseconds.
    */
-  private async executePublish(timer: number): Promise<void> {
+  private async executePublish(): Promise<void> {
     try {
       const survey = await this.surveyService.createSurvey(this.surveyDraft);
-      this.createdSurveyId = survey.id;
-      this.successDialog = true;
-      this.startCountdown();
-      this.cdr.detectChanges();
-      this.redirectTimeout = setTimeout(() => {
-        this.close.emit(); 
-        this.router.navigate(['/']);
-      }, timer);
-
+      this.handlePublishSuccess(survey.id);
     } catch (err: any) {
-      this.errorMessage = err?.message ?? 'Unknown error';
-      this.errorDialog = true;
-      this.cdr.detectChanges();
+      this.handlePublishError(err);
     }
   }
 
+  /**
+   * Handles successful survey creation and starts redirect countdown.
+   * @param id Created survey ID.
+   */
+  private handlePublishSuccess(id: string): void {
+    this.createdSurveyId = id;
+    this.successDialog = true;
+    this.countdown = this.redirectSeconds;
+    this.cdr.detectChanges();
+    this.startCountdown();
+    this.redirectTimeout = setTimeout(() => {
+      this.close.emit();
+      this.router.navigate(['/']);
+    }, this.redirectSeconds * 1000);
+  }
 
   /**
-   * close Modal
+   * Handles errors that occur during survey creation.
+   * @param err Error object thrown during publish.
+   */
+  private handlePublishError(err: any): void {
+    this.errorMessage = err && err.message ? err.message : 'Unknown error';
+    this.errorDialog = true;
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Closes the modal and cancels active timers.
    */
   goHome(): void {
+    clearInterval(this.countdownInterval);
+    clearTimeout(this.redirectTimeout);
     this.close.emit();
   }
 
   /**
    * Validates whether the selected end date is in the future.
-   * 
-   * Sets `endDateError` to `true` if the chosen date is before today.
-   * Optional fields without a value are treated as valid.
-   *
-   * @returns {void}
    */
   validateEndDate(): void {
     if (!this.surveyDraft.enddate) {
       this.endDateError = false;
       return;
     }
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     const selected = new Date(this.surveyDraft.enddate);
-
     this.endDateError = selected < today;
   }
 
   /**
    * Starts the redirect countdown and updates the countdown value each second.
- */
+   */
   startCountdown(): void {
+    clearInterval(this.countdownInterval);
     this.countdownInterval = setInterval(() => {
-      this.countdown--;
-      if (this.countdown === 0) clearInterval(this.countdownInterval);
-      this.cdr.detectChanges();
+      if (this.countdown > 0) {
+        this.countdown--;
+        this.cdr.detectChanges();
+      } else {
+        clearInterval(this.countdownInterval);
+      }
     }, 1000);
   }
 
@@ -242,10 +284,10 @@ export class CreateSurveyComponent {
     this.router.navigate(['/survey', this.createdSurveyId]);
   }
 
-
   /**
- * Shows a temporary error dialog for limit violations.
- */
+   * Shows a temporary error dialog for limit violations.
+   * @param msg Error message to display.
+   */
   showLimitError(msg: string): void {
     this.errorMessage = msg;
     this.errorDialog = true;
@@ -257,17 +299,22 @@ export class CreateSurveyComponent {
 
   /**
    * Clears a form field and resets its touched state.
-   * @param setter A function that assigns the new value to the target field.
-   * @param touchedKey The touched-state key that should be reset.
+   * @param setter Function that assigns the new value.
+   * @param touchedKey Key of the touched state to reset.
    */
   clearField(setter: (v: string) => void, touchedKey: string): void {
     setter('');
     this.touched[touchedKey] = false;
+    this.showErrors.set(false);
   }
 
+  /**
+   * Closes the error dialog without propagating the click event.
+   * @param event Mouse event from the click.
+   */
   closeErrorDialog(event: MouseEvent): void {
-    event.stopPropagation(); 
-    event.preventDefault(); 
-    this.errorDialog = false; 
+    event.stopPropagation();
+    event.preventDefault();
+    this.errorDialog = false;
   }
 }

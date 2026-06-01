@@ -89,7 +89,10 @@
 
                 </label>
 
-                <button type="button" class="delete-btn" (click)="clearField(v => surveyDraft.enddate = v, 'enddate')"></button>
+                <button type="button" class="delete-btn"
+                    (click)="clearField(v => surveyDraft.enddate = v, 'enddate'); validateEndDate()">
+                </button>
+
             </div>
 
             <!-- CATEGORY -->
