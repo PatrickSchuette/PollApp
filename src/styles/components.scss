@@ -120,4 +120,24 @@
   }
 }
 
+@media (max-width: $bp-lg) {
+  .modal-container {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+}
 
+@media (min-width: $bp-md) and (max-height: 600px) {
+  .modal-container {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+}
