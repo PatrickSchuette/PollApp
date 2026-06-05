@@ -4,8 +4,8 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  background: #ffffff;
-  color: #000000;
+  background: $color-text-white;
+  color: $color-text-black;
 
   .survey-detail {
     display: grid;
@@ -19,11 +19,13 @@
 }
 
 .app-header {
-  position: sticky;
   top: 0;
   z-index: 1000;
-  background: #ffffff;
-  border-bottom: 1px solid #00000010;
+  background: $color-text-white;
+
+  @media (min-width: $bp-md) {
+      position: sticky;
+    }
 
   .header-content {
     max-width: 1400px;
@@ -46,7 +48,7 @@
 }
 
 .left {
-  background: #8E70991A;
+  background: $color-bg-detail;
   padding: 1rem;
   border-radius: 0;
   border-top-right-radius: 160px;
@@ -74,7 +76,7 @@
     gap: 0.3rem;
 
     .badge {
-      background: #EE9236;
+      background: $color-text-orange;
       color: $color-text-white;
       padding: 0.3rem 0.7rem;
       border-radius: 0;
@@ -112,7 +114,7 @@
     font-family: 'Nerko One', cursive;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #EE9236;
+    color: $color-text-orange;
     margin: 0;
 
     @media (min-width: $bp-md) {
@@ -187,7 +189,7 @@
         }
 
         &.selected {
-          background: rgba(#EE9236, 0.12);
+          background: rgba($color-text-orange, 0.12);
         }
 
         &.disabled {
@@ -214,7 +216,7 @@
   .primary {
     grid-column: 1 / -1;
     justify-self: end;
-    background: #EE9236;
+    background: $color-text-orange;
     color: $color-text-white;
     padding: 1rem 1.6rem;
     border-radius: 12px;
@@ -230,7 +232,7 @@
     }
 
     &:hover:not(:disabled) {
-      background: #FFCFA1;
+      background: $color-btn-primary;
     }
   }
 }
@@ -250,7 +252,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
+    background: $color-text-white;
     padding: 1rem 1.4rem;
     font-weight: 600;
     cursor: pointer;

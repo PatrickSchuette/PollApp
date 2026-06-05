@@ -4,7 +4,7 @@
   max-height: 420px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #FFB770 transparent;
+  scrollbar-color: $color-btn-primary-hover transparent;
   scroll-padding-right: 8px;
 
   &::-webkit-scrollbar {
@@ -16,7 +16,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #FFB770;
+    background: $color-btn-primary-hover;
     border-radius: 10px;
   }
 }
@@ -40,17 +40,17 @@
   max-width: none;
   height: 127px;
   padding: 12px 20px;
-  background: #D9D9D914;
+  background: $color-bg-grey;
   border-radius: 5px 50px 5px 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: #221227;
+  color: $color-text-black;
   transition: background 0.2s ease;
   cursor: pointer;
 
   &:hover {
-    background: #D9D9D929;
+    background: $color-bg-grey_hover;
   }
 
   @media (min-width: $bp-md) {
@@ -87,10 +87,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 127px; // gleiche Höhe wie normale Karte
-  background: #D9D9D914;
+  height: 127px; 
+  background: $color-bg-light;
   border-radius: 5px 50px 5px 5px;
-  color: #ffffff;
+  color: $color-text-white;
   text-align: center;
   font-size: 20px;
   font-weight: 600;

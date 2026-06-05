@@ -39,8 +39,8 @@
     height: 26px;
     padding: 3px 12px 3px 8px;
     border-top-right-radius: 14px;
-    background: #FFCFA1;
-    color: #221227;
+    background: $color-btn-primary;
+    color: $color-text-black;
     font-weight: 600;
     font-size: 16px;
   }
@@ -49,13 +49,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 32px;
 
     h1 {
       margin: 0;
       font-family: 'Nerko One';
       font-weight: 400;
       font-size: 32px;
-      color: #EE9236;
+      color: $color-text-orange;
 
       @media (min-width: $bp-md) {
         font-size: 42px;
@@ -69,7 +70,7 @@
 }
 
 .meta {
-  background: $color-bg-light;
+  background: $color-bg-dark_secondary;
   padding: 1rem;
   border-radius: $radius-default $radius-default 0 0;
   border-top-right-radius: 80px;
@@ -106,6 +107,14 @@
     }
   }
 
+  .name{
+        margin-top: 24px;
+
+    @media (min-width: $bp-md) {
+      margin-top: 0;
+    }
+  }
+
   .description {
     grid-row: span 2;
 
@@ -135,8 +144,8 @@
 }
 
 .delete-btn {
-  width: 32px;
-  height: 32px;
+  width: 18px;
+  height: 20px;
   background: url('../../../../public/assets/img/delete.svg') center/20px no-repeat;
   border: none;
   cursor: pointer;
@@ -151,7 +160,7 @@
 }
 
 .questions-grid {
-  background: $color-bg-light;
+  background: $color-bg-dark_secondary;
   padding: 0 0 1.8rem;
   border-radius: 0 0 $radius-default $radius-default;
   display: grid;
@@ -163,7 +172,7 @@
     max-height: 460px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #FFB770 transparent;
+    scrollbar-color: $color-btn-primary-hover transparent;
     scroll-padding-right: 8px;
   }
 
@@ -300,15 +309,28 @@
   }
 }
 
-.link-button {
+.btnAddAnswer {
   background: none;
   border: none;
-  color: $color-primary;
+  color: $color-text-white;
   font-weight: 600;
   cursor: pointer;
+  width: 120px;
+  height: 32px;
 
   &:hover {
     text-decoration: underline;
+    background: #FAF5FE33;
+  }
+
+  &::after {
+    content: "";
+    display: inline-block;
+    background-image: url("../../../../public/assets/img/add_circle.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -330,7 +352,7 @@
   text-align: center;
 
   &.error {
-    border: 2px solid #f44336;
+    border: 2px solid $color-text-red;
   }
 }
 

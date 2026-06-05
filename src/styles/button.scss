@@ -5,7 +5,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  textcolor: black;
+  color: black;
 
   padding: 0.8rem 1.4rem;
   border-radius: $radius-default;
@@ -34,19 +34,20 @@
 }
 
 .btn-secondary {
-  background: transparent;
+  background: $color-btn-secondary;
   color: $color-primary;
-  border: 2px solid $color-primary;
 
   &:hover:not(:disabled) {
-    background: rgba($color-primary, 0.1);
+    background: rgba($color-btn-secondary, 0.1);
   }
 }
 
 .btn-add-question {
   align-self: start;
   justify-self: start;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.8rem 1.4rem;
   height: auto;
   background: $color-primary;
@@ -68,17 +69,17 @@
   background: $color-bg-yellow;
   font-weight: 600;
   font-size: 14px;
-  color: #221227;
+  color: $color-text-black;
   cursor: pointer;
   border: none;
   transition: background 0.2s ease;
 
   &:hover {
-    background: #FFCFA1;
+    background: $color-btn-primary;
   }
 
   &.active {
-    background: #FFB770;
+    background: $color-btn-primary-hover;
   }
 }
 

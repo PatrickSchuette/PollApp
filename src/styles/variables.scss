@@ -1,23 +1,35 @@
 :root {
-    --maxWidth: 1400px;
-  }
+  --maxWidth: 1400px;
+}
 
 $color-primary: #ff7a00;
 $color-primary-hover: #ff8f26;
 $color-btn-primary: #FFCFA1;
 $color-btn-primary-hover: #FFB770;
+$color-btn-secondary: #FFB7704D;
+$color-btn-secondary_hover: #FFB7704D;
 
 $color-text-dark: #1a1a1a;
 $color-text-white: #ffffff;
 $color-text-yellow: #FFB770;
+$color-text-red: #f44336;
+$color-text-black: #221227;
+$color-text-grey: #D9D9D91F;
+$color-text-orange: #EE9236;
 
-$color-bg-light:  #8E709929;
+$color-bg-light: #FAF5FE;
+$color-bg-light_highlight: #F4E9FB;
 $color-bg-dark: #35273A;
+$color-bg-dark_hover: #D9D9D91F;
+$color-bg-dark_secondary: #8E709929;
 $color-bg-yellow: #FEE9D4;
+$color-bg-grey: #D9D9D929;
+$color-bg-grey_hover: #D9D9D914;
+$color-bg-white: #ffffff;
+$color-bg-detail: #8E70991A;
 
 $fontcolor-yellow: #FFB770;
 $color-primary-disabled: #bfbfbf;
-
 
 $spacing-section: 4rem;
 $spacing-gap: 2rem;
@@ -27,5 +39,5 @@ $endingSoonBanner: #FFCFA1;
 
 $bp-sm: 576px;
 $bp-md: 768px;
-$bp-lg: 1024px; 
-$bp-xl: 1280px; 
+$bp-lg: 1024px;
+$bp-xl: 1280px;

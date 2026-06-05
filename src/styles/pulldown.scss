@@ -19,24 +19,24 @@
     padding: 7px 40px 7px 13px;
     border: none;
     border-radius: 5px;
-    background: $color-bg-light;
+    background: $color-bg-dark;
     color: $color-text-white;
     font-size: 1rem;
     cursor: pointer;
     appearance: none;
 
     &:hover {
-      background: #D9D9D91F;
+      background: $color-bg-dark_hover;
     }
 
     &:focus {
       outline: none;
-      background: #D9D9D91F;
+      background: $color-bg-dark_hover;
     }
 
     option {
-      color: #000000;
-      background: #ffffff;
+      color: $color-text-black;
+      background: $color-text-white;
     }
   }
 

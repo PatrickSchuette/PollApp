@@ -10,7 +10,7 @@
   padding-bottom: 1rem;
   scroll-snap-type: x mandatory;
   scrollbar-width: thin;
-  scrollbar-color: #FFB770 transparent;
+  scrollbar-color: $color-btn-primary-hover transparent;
 
   &::-webkit-scrollbar {
     height: 8px;
@@ -21,7 +21,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #FFB770;
+    background: $color-btn-primary-hover;
     border-radius: 10px;
   }
 }
@@ -32,7 +32,7 @@
   scroll-snap-align: start;
   height: 210px;
   padding: 18px 14px;
-  background: #FAF5FE;
+  background: $color-bg-light;
   border-radius: 0 70px 0 0;
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@
   transition: background 0.2s ease;
 
   &:hover {
-    background: #F4E9FB;
+    background: $color-bg-light_highlight;
   }
 
   @media (min-width: $bp-lg) {
@@ -56,7 +56,7 @@
   font-weight: 600;
   font-size: 13px;
   line-height: 100%;
-  color: #221227;
+  color: $color-text-black;
   opacity: 0.9;
 }
 
@@ -65,7 +65,7 @@
   font-size: 24px;
   line-height: 110%;
   margin: 0;
-  color: #221227;
+  color: $color-text-black;
   word-break: break-word;
 
   @media (min-width: $bp-lg) {

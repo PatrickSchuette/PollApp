@@ -1,10 +1,17 @@
 <header class="app-header">
-    <div class="header-content">
-        <div class="logo" (click)="goHome()">
-            <img src="./assets/img/logo.svg" alt="Logo" class="logo" />
+    <div class="onlyDesktop">
+        <div class="header-content">
+            <div class="logo " (click)="goHome()">
+                <img src="./assets/img/logo_dark.svg" alt="Logo" class="logo" />
+            </div>
+            <button class="button btn-primary" (click)="goToCreateSurvey()">Create survey</button>
         </div>
+    </div>
 
-        <button class="button btn-primary" (click)="goToCreateSurvey()">Create survey</button>
+    <div class="header-content onlyMobile" style="padding-bottom: 56px;">
+        <div class="logo " (click)="goHome()">
+            <img src="./assets/img/logo_dark.svg" alt="Logo" class="logo" />
+        </div>
     </div>
 </header>
 
@@ -17,6 +24,13 @@
 
             <div class="meta">
                 <span class="badge">Published</span>
+
+                <div class="onlyMobile" style="justify-self: center; margin-right: 1rem; margin-top: 0.5rem;">
+                    <button class="button btn-primary btn-close-mobile" (click)="goHome()"
+                        style="padding:0 !important;">
+                        <img src="./assets/img/close.svg" alt="Cancel">
+                    </button>
+                </div>
 
                 <div class="end">
                     @let days = getDaysLeft(s.enddate);
@@ -73,20 +87,32 @@
             </div>
             }
 
-            <button class="button btn-primary primary" (click)="completeSurvey()" [disabled]="isClosed()">Complete
-                survey</button>
+            <div class="onlyMobile" style="justify-self: end;">
+                <button class="button btn-primary primary  btn-symbol btn-check" (click)="completeSurvey()"
+                    [disabled]="isClosed()" style="color:black;">
+                    Complete
+                </button>
+            </div>
+
+            <div class="onlyDesktop" style="justify-self: end; align-self: end; grid-column: 2;">
+                <button class="button btn-secondary primary" (click)="completeSurvey()" [disabled]="isClosed()">
+                    Complete survey
+                </button>
+            </div>
+
         </div>
 
         <div class="results-toggle" (click)="toggleResults()">
             <span>{{ showResults ? 'Close results' : 'Show results' }}</span>
-            <img [src]="showResults ? 'assets/img/arrow_up_black.svg' : 'assets/img/arrow_down_black.svg'" alt="toggle" />
+            <img [src]="showResults ? 'assets/img/arrow_up_black.svg' : 'assets/img/arrow_down_black.svg'"
+                alt="toggle" />
         </div>
-        
+
         <div class="right" [class.hidden]="!showResults">
             <app-survey-results [results]="results()" [hasVotes]="hasVotes()">
             </app-survey-results>
         </div>
-          
+
 
     </div>
 
@@ -106,6 +132,6 @@
         </div>
     </div>
     }
-      
+
 
 </div>
